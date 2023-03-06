@@ -30,7 +30,6 @@ public enum DIFFICULTY
     EASY,
     NORMAL,
     HARD,
-    NONE
 }
 
 /*
@@ -56,6 +55,8 @@ public class GameManager : MonoBehaviour
     private float _previewTime;
     private bool _isGame;
     private bool _isPreview;
+    private int _comboStack = 0;
+    private int _maxComboStack = 5;
 
     // 카드 관련 변수
     private List<CardInfo> cards;
@@ -68,11 +69,17 @@ public class GameManager : MonoBehaviour
     private int _gridSize;
 
     // Show In Inspector
-    [SerializeField] private TextMeshProUGUI findCardNumber;
+    [Header("▼ Objects")]
     [SerializeField] private Transform cardObj;
-    [SerializeField] private TextMeshProUGUI showDifficulty;
     [SerializeField] private Image showTime;
+    [SerializeField] private Image showComboGauge;
+
+    [Space(10)]
+    [Header("▼ Text Objects")]
+    [SerializeField] private TextMeshProUGUI showFindCardNumber;
+    [SerializeField] private TextMeshProUGUI showDifficulty;
     [SerializeField] private TextMeshProUGUI showRemainPreviewTime;
+    [SerializeField] private TextMeshProUGUI showGameTimeInfo;
 
     [Space(10)]
     [Header("▼ Managers")]
@@ -140,7 +147,9 @@ public class GameManager : MonoBehaviour
     void GameInit()
     {
         _gameTime = 0;
+        _comboStack = 0;
         _isGame = true;
+        showComboGauge.fillAmount = 0;
         showTime.fillAmount = 1;
     }
 
@@ -201,6 +210,37 @@ public class GameManager : MonoBehaviour
         screenManager.CoverScreen("Preview");
     }
 
+    void ShowComboGauge()
+    {
+        showComboGauge.fillAmount = (1.0f / _maxComboStack) * _comboStack;
+    }
+
+    void StackCombo(bool isCombo)
+    {
+        if (!isCombo)
+        {
+            // 콤보가 안쌓임 (Easy, Normal이면 콤보가 한 칸 깎이고 Hard면 전부 깎임)
+            switch (_difficulty)
+            {
+                case DIFFICULTY.EASY:
+                case DIFFICULTY.NORMAL:
+                    _comboStack = (_comboStack - 1 > 0) ? _comboStack - 1 : 0;
+                    break;
+                case DIFFICULTY.HARD:
+                    _comboStack = 0;
+                    break;
+            }
+        }
+        else
+        {
+            // 콤보가 쌓임
+            _comboStack = (_comboStack + 1 > _maxComboStack) ? _comboStack : _comboStack + 1;
+        }
+
+        ShowComboGauge();
+    }
+
+    // public 함수
     public void PreviewOver()
     {
         if (!_isPreview) return; // 이미 종료된 상태이면 작동하지 않는다.
@@ -239,11 +279,6 @@ public class GameManager : MonoBehaviour
                 _difficulty = DIFFICULTY.HARD;
                 showDifficulty.text = "Hard";
                 _maxPreviewTime = 30;
-                break;
-            default:
-                _difficulty = DIFFICULTY.NONE;
-                showDifficulty.text = "???";
-                print("난이도를 설정해야 합니다.");
                 break;
         }
         _gridSize = gridSize;
@@ -289,7 +324,12 @@ public class GameManager : MonoBehaviour
         curCards.Clear();
 
         // 화면 초기화 -> 게임 오버 화면으로
-        screenManager.ScreenClear();
+        //screenManager.ScreenClear();
+        // 게임 오버 화면으로
+        screenManager.GoScreen("GameOver");
+
+        // 걸린 시간 보여주기
+        showGameTimeInfo.text = "걸린 시간: " + _gameTime.ToString("F2");
 
         // 카드 반납
         ReturnCards();
@@ -309,7 +349,7 @@ public class GameManager : MonoBehaviour
 
         int findNumberIndex = Random.Range(0, newCards.Count);
         findCard = newCards[findNumberIndex];
-        findCardNumber.text = findCard.Number.ToString();
+        showFindCardNumber.text = findCard.Number.ToString();
     }
 
     public bool CheckNumber(CardInfo cardInfo)
@@ -319,11 +359,13 @@ public class GameManager : MonoBehaviour
             print("정답을 맞추셨습니다!");
             newCards.Remove(findCard);
             ChangeNumber();
+            StackCombo(true);
             return true;
         }
         else
         {
             print("오답입니다.");
+            StackCombo(false);
             return false;
         }
     }
@@ -347,7 +389,7 @@ public class GameManager : MonoBehaviour
  * 2023-03-05 00:30 -> 랜덤 숫자 뽑기 완성
  * 2023-03-05 18:21 -> 난이도 설정 및 화면 설정
  * 2023-03-06 19:34 -> 게임 시간 설정 및 미리보기 기능 제작
+ * 2023-03-06 20:43 -> 게임 오버 화면 추가 및 콤보 기능 추가
  * TODO
- *  게임 시간 설정(1분) : O
- *  난이도에 따른 미리보기 시간 설정 -> 미리보기 기능 제작
+ *  피버 기능 추가
 */
