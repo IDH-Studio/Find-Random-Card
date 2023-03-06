@@ -57,4 +57,10 @@ public class ScreenManager : MonoBehaviour
         screenStack.Push(screenName);
         ShowScreen(true, screenStack.Peek());
     }
+
+    public void CoverScreen(string screenName)
+    {
+        screenStack.Push(screenName);
+        ShowScreen(true, screenStack.Peek());
+    }
 }

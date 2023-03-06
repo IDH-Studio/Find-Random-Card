@@ -42,32 +42,37 @@ public enum DIFFICULTY
  * 추가할거 추가하고
 */
 
-public class CardInfo
-{
-    public int Number { get; set; }
-}
-
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
+    // 게임 관련 변수
     private DIFFICULTY _difficulty;
     public DIFFICULTY Difficulty { get { return _difficulty; } }
 
+    private float _maxGameTime = 60f;
+    private float _gameTime;
+    private float _maxPreviewTime;
+    private float _previewTime;
+    private bool _isGame;
+    private bool _isPreview;
+
+    // 카드 관련 변수
     private List<CardInfo> cards;
     private List<CardInfo> newCards;
 
     private CardInfo findCard;
+    private List<Card> curCards;
 
     private GridLayoutGroup _cardLayoutGroup;
     private int _gridSize;
 
-    // Inspector
-    [SerializeField] private GameObject startScreen;
-    [SerializeField] private GameObject gameScreen;
+    // Show In Inspector
     [SerializeField] private TextMeshProUGUI findCardNumber;
     [SerializeField] private Transform cardObj;
     [SerializeField] private TextMeshProUGUI showDifficulty;
+    [SerializeField] private Image showTime;
+    [SerializeField] private TextMeshProUGUI showRemainPreviewTime;
 
     [Space(10)]
     [Header("▼ Managers")]
@@ -98,50 +103,62 @@ public class GameManager : MonoBehaviour
 
         newCards = new List<CardInfo>();
         findCard = new CardInfo();
+        curCards = new List<Card>();
 
         _cardLayoutGroup = cardObj.gameObject.GetComponent<GridLayoutGroup>();
     }
 
+    private void Update()
+    {
+        if (_isPreview)
+        {
+            // 미리보기 중일 경우
+            // 미리보기 시간 증가
+            _previewTime += Time.deltaTime;
+
+            if (_previewTime >= _maxPreviewTime)
+            {
+                // 미리보기 시간이 끝났을 경우
+                PreviewOver();
+            }
+            showRemainPreviewTime.text = ((int)(_maxPreviewTime - _previewTime)).ToString();
+        }
+
+        if (!_isGame) return;
+
+        _gameTime += Time.deltaTime;
+
+        if (_gameTime >= _maxGameTime)
+        {
+            // 게임 끝
+            GameOver();
+        }
+
+        showTime.fillAmount = 1 - (_gameTime / _maxGameTime);
+    }
+
     void GameInit()
     {
-        //startScreen.SetActive(false);
-        //gameScreen.SetActive(true);
-        //newCards = Enumerable.Repeat(new CardInfo(), 25).ToList();
+        _gameTime = 0;
+        _isGame = true;
+        showTime.fillAmount = 1;
     }
 
-    public void SelectDifficulty(int gridSize)
+    void ReturnCards()
     {
-        switch (gridSize)
+        // 카드 반납
+        int cardObjChild = cardObj.childCount;
+
+        for (int index = 0; index < cardObjChild; ++index)
         {
-            case 3:
-                _difficulty = DIFFICULTY.EASY;
-                showDifficulty.text = "Easy";
-                break;
-            case 4:
-                _difficulty = DIFFICULTY.NORMAL;
-                showDifficulty.text = "Normal";
-                break;
-            case 5:
-                _difficulty = DIFFICULTY.HARD;
-                showDifficulty.text = "Hard";
-                break;
-            default:
-                _difficulty = DIFFICULTY.NONE;
-                showDifficulty.text = "???";
-                print("난이도를 설정해야 합니다.");
-                break;
+            cardObj.GetChild(0).SetParent(objectManager);
         }
-        _gridSize = gridSize;
     }
 
-    public void GameStart()
+    void ShuffleCards()
     {
-        print("게임 시작");
-        //GameInit();
+        if (cardObj.childCount != 0) ReturnCards();
 
-        /*
-         * 게임 시작 시 카드 종류가 저장되어 있는 리스트 중 25(pow(n))개를 골라 가져온다.
-        */
         // 랜덤 섞기
         int random1, random2;
         CardInfo temp;
@@ -155,40 +172,139 @@ public class GameManager : MonoBehaviour
             cards[random1] = cards[random2];
             cards[random2] = temp;
         }
+    }
 
+    void BringCards()
+    {
         // 무작위로 섞인 카드 숫자 중 pow(n, 2)개 만큼 가져오기
-        int cellSize = -50 * _gridSize + 400;
-        _cardLayoutGroup.cellSize = new Vector2(cellSize, cellSize + 50);
         newCards = cards.GetRange(0, (int)Mathf.Pow(_gridSize, 2));
 
         for (int index = 0; index < newCards.Count; ++index)
         {
             // 카드 오브젝트 가져오기
             objectManager.GetChild(0).SetParent(cardObj);
+
+            newCards[index].PreviewTime = _maxPreviewTime;
+
             // 가져온 카드 오브젝트의 숫자 설정
             cardObj.GetChild(index).GetComponent<Card>().SetCardInfo(newCards[index]);
+            curCards.Add(cardObj.GetChild(index).GetComponent<Card>());
+        }
+    }
+
+    void ShowPreview()
+    {
+        _previewTime = 0;
+        _isPreview = true;
+
+        // Preview 화면을 이전에 보이던 화면에 덧씌움
+        screenManager.CoverScreen("Preview");
+    }
+
+    public void PreviewOver()
+    {
+        if (!_isPreview) return; // 이미 종료된 상태이면 작동하지 않는다.
+
+        // 미리보기 종료 후 바로 게임 시작
+        _isPreview = false;
+        // 미리보기 화면이 제일 나중에 뜬 화면이므로 화면을 제거한다.
+        screenManager.PrevScreen();
+        // 카드를 전부 뒤집는다. (카드를 전부 안 보이도록 바꾼다.)
+        foreach (Card curCard in curCards)
+        {
+            curCard.FlipCard();
         }
 
+        GameStart();
+    }
+
+    public void SelectDifficulty(int gridSize)
+    {
+        switch (gridSize)
+        {
+            case 3:
+                // 10초
+                _difficulty = DIFFICULTY.EASY;
+                _maxPreviewTime = 10;
+                showDifficulty.text = "Easy";
+                break;
+            case 4:
+                // 20초
+                _difficulty = DIFFICULTY.NORMAL;
+                _maxPreviewTime = 20;
+                showDifficulty.text = "Normal";
+                break;
+            case 5:
+                // 30초
+                _difficulty = DIFFICULTY.HARD;
+                showDifficulty.text = "Hard";
+                _maxPreviewTime = 30;
+                break;
+            default:
+                _difficulty = DIFFICULTY.NONE;
+                showDifficulty.text = "???";
+                print("난이도를 설정해야 합니다.");
+                break;
+        }
+        _gridSize = gridSize;
+    }
+
+    public void GameStart()
+    {
+        // 미리보기가 끝난 후 미리보기 화면을 끄고 제대로 게임을 시작한다.
+        GameInit();
+    }
+
+    public void GameReady()
+    {
+        // 카드 배치, 미리보기 보여주기
+
+        /* 카드 배치 시작 */
+        // 그리드 사이즈에 맞게 카드 사이즈 조절
+        int cellSize = -50 * _gridSize + 400;
+        _cardLayoutGroup.cellSize = new Vector2(cellSize, cellSize + 50);
+
+        /*
+         * 게임 시작 시 카드 종류가 저장되어 있는 리스트 중 25(pow(n))개를 골라 가져온다.
+        */
+        // 카드 섞기
+        ShuffleCards();
+
+        // 카드 가져오기
+        BringCards();
+
+        // 찾아야 하는 카드 뽑기
         ChangeNumber();
+        /* 카드 배치 종료 */
+
+        // 미리보기 화면 보여주기
+        ShowPreview();
     }
 
     public void GameOver()
     {
-        screenManager.ScreenClear();
-        int cardObjChild = cardObj.childCount;
+        // 변수 초기화
+        _isGame = false;
+        _isPreview = false;
+        curCards.Clear();
 
-        for (int index = 0; index < cardObjChild; ++index)
-        {
-            cardObj.GetChild(0).SetParent(objectManager);
-        }
+        // 화면 초기화 -> 게임 오버 화면으로
+        screenManager.ScreenClear();
+
+        // 카드 반납
+        ReturnCards();
     }
 
     public void ChangeNumber()
     {
         if (newCards.Count <= 0)
         {
+            // 만약 새 카드가 없으면 카드를 섞어서 새롭게 가져온다. -> X
+            // 만약 새 카드가 없으면 게임을 종료한다.
             GameOver();
             return;
+            //ShuffleCards();
+            //BringCards();
         }
 
         int findNumberIndex = Random.Range(0, newCards.Count);
@@ -220,11 +336,18 @@ public class GameManager : MonoBehaviour
             Application.Quit();  
         #endif
     }
+
+    public void IsGamePause(bool isPause)
+    {
+        _isGame = !isPause;
+    }
 }
 
 /*
  * 2023-03-05 00:30 -> 랜덤 숫자 뽑기 완성
  * 2023-03-05 18:21 -> 난이도 설정 및 화면 설정
+ * 2023-03-06 19:34 -> 게임 시간 설정 및 미리보기 기능 제작
  * TODO
- *  그리드 숫자에 따라 뽑는 숫자 및 카드 보이는거 달리 하기
+ *  게임 시간 설정(1분) : O
+ *  난이도에 따른 미리보기 시간 설정 -> 미리보기 기능 제작
 */
