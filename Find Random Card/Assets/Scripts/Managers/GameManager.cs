@@ -437,7 +437,6 @@ public class GameManager : MonoBehaviour
     {
         if (cardInfo.Number == findCard.Number)
         {
-            print("정답을 맞추셨습니다!");
             newCards.Remove(findCard);
             ChangeNumber();
             StackCombo(true);
@@ -472,6 +471,7 @@ public class GameManager : MonoBehaviour
  * 2023-03-06 19:34 -> 게임 시간 설정 및 미리보기 기능 제작
  * 2023-03-06 20:43 -> 게임 오버 화면 추가 및 콤보 기능 추가
  * 2023-03-07 12:20 -> 피버 기능 추가 (피버 시간은 미리보기 시간의 1/5배)
+ * 2023-03-07 15:10 -> 
  * TODO
  *  
 */

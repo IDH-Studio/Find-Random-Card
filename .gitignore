@@ -58,3 +58,5 @@ Find Random Card/*.unitypackage
 # Crashlytics generated file
 Find Random Card/crashlytics-build.properties
 
+# Resource files
+/Resources/
