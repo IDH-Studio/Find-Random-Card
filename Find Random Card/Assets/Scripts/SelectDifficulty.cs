@@ -46,6 +46,7 @@ public class SelectDifficulty : MonoBehaviour
     {
         _currentPage = index;
         _scrollBar.value = _scrollPageValues[index];
+        GameManager._instance.SelectDifficulty(_currentPage + 3);
     }
 
     private void Update()
@@ -107,7 +108,7 @@ public class SelectDifficulty : MonoBehaviour
             _currentPage++;
         }
 
-        GameManager.instance.SelectDifficulty(_currentPage + 3);
+        GameManager._instance.SelectDifficulty(_currentPage + 3);
         StartCoroutine(OnSwipeOneStep(_currentPage));
     }
 
@@ -144,7 +145,7 @@ public class SelectDifficulty : MonoBehaviour
             _currentPage--;
         }
 
-        GameManager.instance.SelectDifficulty(_currentPage + 3);
+        GameManager._instance.SelectDifficulty(_currentPage + 3);
         StartCoroutine(OnSwipeOneStep(_currentPage));
     }
 

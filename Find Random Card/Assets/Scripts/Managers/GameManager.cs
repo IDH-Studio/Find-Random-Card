@@ -46,7 +46,7 @@ public enum DIFFICULTY
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager                   instance;
+    public static GameManager                   _instance;
 
     // 게임 관련 변수
     private DIFFICULTY                          _difficulty;
@@ -71,43 +71,43 @@ public class GameManager : MonoBehaviour
 
     // Getter, Setter
     public DIFFICULTY                           Difficulty { get { return _difficulty; } }
-    public bool                                 _IsFever { get { return _isFever; } }
+    public bool                                 IsFever { get { return _isFever; } }
 
 
     // 카드 관련 변수
     [SerializeField] private int                _maxCardTypeCount;
-    private List<CardInfo>                      cards;
-    private List<CardInfo>                      newCards;
+    private List<CardInfo>                      _cards;
+    private List<CardInfo>                      _newCards;
 
-    private CardInfo                            findCard;
-    private List<Card>                          curCards;
+    private CardInfo                            _findCard;
+    private List<Card>                          _curCards;
 
     private GridLayoutGroup                     _cardLayoutGroup;
     private int                                 _gridSize;
 
     // Show In Inspector
     [Header("▼ Objects")]
-    [SerializeField] private Transform          cardObj;
-    [SerializeField] private Image              showTime;
-    [SerializeField] private Image              showComboGauge;
+    [SerializeField] private Transform          _cardObj;
+    [SerializeField] private Image              _showTime;
+    [SerializeField] private Image              _showComboGauge;
 
     [Space(10)]
     [Header("▼ Text Objects")]
-    [SerializeField] private TextMeshProUGUI    showFindCardNumber;
-    [SerializeField] private TextMeshProUGUI    showDifficulty;
-    [SerializeField] private TextMeshProUGUI    showRemainPreviewTime;
-    [SerializeField] private TextMeshProUGUI    showGameTimeInfo;
+    [SerializeField] private TextMeshProUGUI    _showFindCardNumber;
+    [SerializeField] private TextMeshProUGUI    _showDifficulty;
+    [SerializeField] private TextMeshProUGUI    _showRemainPreviewTime;
+    [SerializeField] private TextMeshProUGUI    _showGameTimeInfo;
 
     [Space(10)]
     [Header("▼ Managers")]
-    public Transform                            objectManager;
-    public ScreenManager                        screenManager;
+    public Transform                            _objectManager;
+    public ScreenManager                        _screenManager;
     
     private void Awake()
     {
-        if (instance == null)
+        if (_instance == null)
         {
-            instance = this;
+            _instance = this;
         }
         else
         {
@@ -115,21 +115,21 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        cards = new List<CardInfo>(new CardInfo[_maxCardTypeCount]);
+        _cards = new List<CardInfo>(new CardInfo[_maxCardTypeCount]);
 
         int number = 1;
 
-        for (int index = 0; index < cards.Count; ++index)
+        for (int index = 0; index < _cards.Count; ++index)
         {
-            cards[index] = new CardInfo();
-            cards[index].Number = number++;
+            _cards[index] = new CardInfo();
+            _cards[index].Number = number++;
         }
 
-        newCards = new List<CardInfo>();
-        findCard = new CardInfo();
-        curCards = new List<Card>();
+        _newCards = new List<CardInfo>();
+        _findCard = new CardInfo();
+        _curCards = new List<Card>();
 
-        _cardLayoutGroup = cardObj.gameObject.GetComponent<GridLayoutGroup>();
+        _cardLayoutGroup = _cardObj.gameObject.GetComponent<GridLayoutGroup>();
     }
 
     private void Update()
@@ -153,22 +153,22 @@ public class GameManager : MonoBehaviour
         _feverTime += Time.deltaTime;
 
         // 피버 시간 동안 맞춘 카드를 제외한 모든 카드를 보여준다.
-        foreach (Card curCard in curCards)
+        foreach (Card curCard in _curCards)
         {
             curCard.FlipCard(true);
         }
 
         // 피버 게이지 애니메이션
-        showComboGauge.fillAmount = 1 - (_feverTime / _maxFeverTime);
+        _showComboGauge.fillAmount = 1 - (_feverTime / _maxFeverTime);
 
         if (_feverTime >= _maxFeverTime)
         {
             // 피버 타임 끝
             _isFever = false;
             _feverTime = 0;
-            showComboGauge.fillAmount = 0;
+            _showComboGauge.fillAmount = 0;
 
-            foreach (Card curCard in curCards)
+            foreach (Card curCard in _curCards)
             {
                 curCard.FlipCard(false);
             }
@@ -183,7 +183,7 @@ public class GameManager : MonoBehaviour
         // 미리보기 시간 증가
         _previewTime += Time.deltaTime;
 
-        showRemainPreviewTime.text = ((int)(_maxPreviewTime - _previewTime)).ToString();
+        _showRemainPreviewTime.text = ((int)(_maxPreviewTime - _previewTime)).ToString();
 
         if (_previewTime >= _maxPreviewTime)
         {
@@ -198,7 +198,7 @@ public class GameManager : MonoBehaviour
 
         _gameTime += Time.deltaTime;
 
-        showTime.fillAmount = 1 - (_gameTime / _maxGameTime);
+        _showTime.fillAmount = 1 - (_gameTime / _maxGameTime);
 
         if (_gameTime >= _maxGameTime)
         {
@@ -211,59 +211,57 @@ public class GameManager : MonoBehaviour
     void GameInit()
     {
         _gameTime = 0;
-        _comboStack = 0;
-        _feverTime = 0;
-        _isFever = false;
         _isGame = true;
-        showComboGauge.fillAmount = 0;
-        showTime.fillAmount = 1;
+        _showTime.fillAmount = 1;
     }
 
     void ReturnCards()
     {
         // 카드 반납
-        int cardObjChild = cardObj.childCount;
+        int cardObjChild = _cardObj.childCount;
 
         for (int index = 0; index < cardObjChild; ++index)
         {
-            cardObj.GetChild(0).SetParent(objectManager);
+            _cardObj.GetChild(0).SetParent(_objectManager);
         }
     }
 
     void ShuffleCards()
     {
-        if (cardObj.childCount != 0) ReturnCards();
+        if (_cardObj.childCount != 0) ReturnCards();
 
         // 랜덤 섞기
         int random1, random2;
         CardInfo temp;
 
-        for (int index = 0; index < cards.Count; ++index)
+        for (int index = 0; index < _cards.Count; ++index)
         {
-            random1 = UnityEngine.Random.Range(0, cards.Count);
-            random2 = UnityEngine.Random.Range(0, cards.Count);
+            random1 = UnityEngine.Random.Range(0, _cards.Count);
+            random2 = UnityEngine.Random.Range(0, _cards.Count);
 
-            temp = cards[random1];
-            cards[random1] = cards[random2];
-            cards[random2] = temp;
+            temp = _cards[random1];
+            _cards[random1] = _cards[random2];
+            _cards[random2] = temp;
         }
     }
 
     void BringCards()
     {
         // 무작위로 섞인 카드 숫자 중 pow(n, 2)개 만큼 가져오기
-        newCards = cards.GetRange(0, (int)Mathf.Pow(_gridSize, 2));
+        _newCards = _cards.GetRange(0, (int)Mathf.Pow(_gridSize, 2));
 
-        for (int index = 0; index < newCards.Count; ++index)
+        for (int index = 0; index < _newCards.Count; ++index)
         {
             // 카드 오브젝트 가져오기
-            objectManager.GetChild(0).SetParent(cardObj);
+            _objectManager.GetChild(0).SetParent(_cardObj);
 
-            newCards[index].PreviewTime = _maxPreviewTime;
+            _newCards[index].PreviewTime = _maxPreviewTime;
 
             // 가져온 카드 오브젝트의 숫자 설정
-            cardObj.GetChild(index).GetComponent<Card>().SetCardInfo(newCards[index]);
-            curCards.Add(cardObj.GetChild(index).GetComponent<Card>());
+            Card cardScript = _cardObj.GetChild(index).GetComponent<Card>();
+            cardScript.SetCardInfo(_newCards[index]);
+            cardScript.SetCardNumberSize(_gridSize);
+            _curCards.Add(cardScript);
         }
     }
 
@@ -273,12 +271,12 @@ public class GameManager : MonoBehaviour
         _isPreview = true;
 
         // Preview 화면을 이전에 보이던 화면에 덧씌움
-        screenManager.CoverScreen("Preview");
+        _screenManager.CoverScreen("Preview");
     }
 
     void ShowComboGauge()
     {
-        showComboGauge.fillAmount = (1.0f / _maxComboStack) * _comboStack;
+        _showComboGauge.fillAmount = (1.0f / _maxComboStack) * _comboStack;
     }
 
     void StackCombo(bool isCombo)
@@ -320,9 +318,9 @@ public class GameManager : MonoBehaviour
         // 미리보기 종료 후 바로 게임 시작
         _isPreview = false;
         // 미리보기 화면이 제일 나중에 뜬 화면이므로 화면을 제거한다.
-        screenManager.PrevScreen();
+        _screenManager.PrevScreen();
         // 카드를 전부 뒤집는다. (카드를 전부 안 보이도록 바꾼다.)
-        foreach (Card curCard in curCards)
+        foreach (Card curCard in _curCards)
         {
             curCard.FlipCard(false);
         }
@@ -337,24 +335,21 @@ public class GameManager : MonoBehaviour
         {
             case DIFFICULTY.EASY:
                 // 10초
-                //_difficulty = DIFFICULTY.EASY;
                 _maxPreviewTime = 10;
-                showDifficulty.text = "Easy";
-                cellSize = 300;
+                _showDifficulty.text = "쉬움";
+                cellSize = 200;
                 break;
             case DIFFICULTY.NORMAL:
                 // 20초
-                //_difficulty = DIFFICULTY.NORMAL;
                 _maxPreviewTime = 20;
-                showDifficulty.text = "Normal";
-                cellSize = 200;
+                _showDifficulty.text = "보통";
+                cellSize = 150;
                 break;
             case DIFFICULTY.HARD:
                 // 30초
-                //_difficulty = DIFFICULTY.HARD;
-                showDifficulty.text = "Hard";
+                _showDifficulty.text = "어려움";
                 _maxPreviewTime = 30;
-                cellSize = 150;
+                cellSize = 100;
                 break;
         }
         _difficulty = (DIFFICULTY)gridSize;
@@ -396,48 +391,61 @@ public class GameManager : MonoBehaviour
         ShowPreview();
     }
 
-    public void GameOver()
+    public void GameClear()
+    {
+        // 모든 카드를 다 찾았을 때
+        _showComboGauge.fillAmount = 0;
+        _showTime.fillAmount = 0;
+
+        // 게임 오버 화면으로
+        _screenManager.GoScreen("GameOver");
+
+        // 걸린 시간 보여주기
+        _showGameTimeInfo.text = "걸린 시간: " + _gameTime.ToString("F2");
+        GameOver(true);
+    }
+
+    public void GameOver(bool isClear = false)
     {
         // 변수 초기화
+        _comboStack = 0;
+        _feverTime = 0;
+        _isFever = false;
         _isGame = false;
         _isPreview = false;
         _previewTime = 0;
-        curCards.Clear();
-
-        // 화면 초기화 -> 게임 오버 화면으로
-        //screenManager.ScreenClear();
-        // 게임 오버 화면으로
-        screenManager.GoScreen("GameOver");
-
-        // 걸린 시간 보여주기
-        showGameTimeInfo.text = "걸린 시간: " + _gameTime.ToString("F2");
+        _curCards.Clear();
 
         // 카드 반납
         ReturnCards();
+
+        // 화면 초기화 -> 게임 오버 화면으로
+        if (!isClear) _screenManager.ScreenClear();
     }
 
     public void ChangeNumber()
     {
-        if (newCards.Count <= 0)
+        // 게임 클리어
+        if (_newCards.Count <= 0)
         {
             // 만약 새 카드가 없으면 카드를 섞어서 새롭게 가져온다. -> X
             // 만약 새 카드가 없으면 게임을 종료한다.
-            GameOver();
+            GameClear();
             return;
             //ShuffleCards();
             //BringCards();
         }
 
-        int findNumberIndex = Random.Range(0, newCards.Count);
-        findCard = newCards[findNumberIndex];
-        showFindCardNumber.text = findCard.Number.ToString();
+        int findNumberIndex = Random.Range(0, _newCards.Count);
+        _findCard = _newCards[findNumberIndex];
+        _showFindCardNumber.text = _findCard.Number.ToString();
     }
 
     public bool CheckNumber(CardInfo cardInfo)
     {
-        if (cardInfo.Number == findCard.Number)
+        if (cardInfo.Number == _findCard.Number)
         {
-            newCards.Remove(findCard);
+            _newCards.Remove(_findCard);
             ChangeNumber();
             StackCombo(true);
             return true;
@@ -471,7 +479,7 @@ public class GameManager : MonoBehaviour
  * 2023-03-06 19:34 -> 게임 시간 설정 및 미리보기 기능 제작
  * 2023-03-06 20:43 -> 게임 오버 화면 추가 및 콤보 기능 추가
  * 2023-03-07 12:20 -> 피버 기능 추가 (피버 시간은 미리보기 시간의 1/5배)
- * 2023-03-07 15:10 -> 
+ * 2023-03-07 15:10 -> 난이도 설정 기능 변경
  * TODO
  *  
 */

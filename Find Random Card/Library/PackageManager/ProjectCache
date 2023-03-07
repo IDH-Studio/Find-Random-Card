@@ -5,16 +5,16 @@ m_ProjectFiles:
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 638133499727667241
-    m_Hash: 2028290034
+      ticks: 638137914745092481
+    m_Hash: 3880432790
   m_LockFileStatus:
     m_FilePath: D:/IDH Studio/Dev/Find-Random-Card/Find Random Card/Packages/packages-lock.json
     m_PathExists: 1
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 638133500295617001
-    m_Hash: 3196487521
+      ticks: 638137914745609676
+    m_Hash: 2150433288
 m_EmbeddedPackageManifests:
   m_ManifestsStatus: {}
 m_LocalPackages:
@@ -172,6 +172,59 @@ m_ResolvedPackages:
     path: 
   unityLifecycle:
     version: 1.17.1
+    nextVersion: 
+- packageId: com.unity.device-simulator.devices@1.0.0
+  testable: 0
+  isDirectDependency: 1
+  version: 1.0.0
+  source: 1
+  resolvedPath: D:\IDH Studio\Dev\Find-Random-Card\Find Random Card\Library\PackageCache\com.unity.device-simulator.devices@1.0.0
+  assetPath: Packages/com.unity.device-simulator.devices
+  name: com.unity.device-simulator.devices
+  displayName: Device Simulator Devices
+  author:
+    name: 
+    email: 
+    url: 
+  category: 
+  type: asset
+  description: This package contains additional devices for the Device Simulator.
+    Each device has a complete device definition and includes a device overlay. After
+    you install this package, the additional devices are immediately available in
+    the Device Simulator.
+  status: 4
+  errors: []
+  versions:
+    all:
+    - 1.0.0-pre.1
+    - 1.0.0-pre.2
+    - 1.0.0-pre.4
+    - 1.0.0
+    compatible:
+    - 1.0.0
+    verified: 1.0.0
+  dependencies: []
+  resolvedDependencies: []
+  keywords: []
+  registry:
+    id: main
+    name: 
+    url: https://packages.unity.com
+    scopes: []
+    isDefault: 1
+    capabilities: 7
+  hideInEditor: 0
+  isAssetStorePackage: 0
+  datePublishedTicks: 637810555200000000
+  documentationUrl: 
+  hasRepository: 1
+  repository:
+    type: git
+    url: https://github.cds.internal.unity3d.com/unity/com.unity.device-simulator.devices.git
+    revision: 2e1ffaaea0624daf91ee6c76906fd119dbd584c6
+    path: 
+  unityLifecycle:
+    version: 1.0.0
     nextVersion: 
 - packageId: com.unity.feature.2d@1.0.0
   testable: 0
@@ -3009,6 +3062,7 @@ m_ResolvedPackages:
     - 9.0.1
     - 10.0.0-pre.1
     - 10.0.0-pre.2
+    - 10.0.0
     compatible:
     - 8.0.2
     - 8.0.3
@@ -3238,6 +3292,7 @@ m_ResolvedPackages:
     - 8.0.2
     - 9.0.0-pre.1
     - 9.0.0-pre.2
+    - 9.0.0
     compatible:
     - 7.0.1
     - 7.0.2
@@ -3447,6 +3502,7 @@ m_ResolvedPackages:
     - 9.0.1
     - 10.0.0-pre.1
     - 10.0.0-pre.2
+    - 10.0.0
     compatible:
     - 8.0.0
     - 8.0.1
@@ -3618,6 +3674,7 @@ m_ResolvedPackages:
     - 3.0.3
     - 4.0.0-pre.1
     - 4.0.0-pre.2
+    - 4.0.0-pre.3
     compatible:
     - 3.0.2
     - 3.0.3
@@ -3889,6 +3946,7 @@ m_ResolvedPackages:
     - 8.0.1
     - 9.0.0-pre.1
     - 9.0.0-pre.2
+    - 9.0.0
     compatible:
     - 7.0.0
     - 7.0.1
