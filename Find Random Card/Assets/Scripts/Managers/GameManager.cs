@@ -160,12 +160,6 @@ public class GameManager : MonoBehaviour
 
         _feverTime += Time.deltaTime;
 
-        // 피버 시간 동안 맞춘 카드를 제외한 모든 카드를 보여준다.
-        foreach (Card curCard in _curCards)
-        {
-            curCard.FlipCard(true);
-        }
-
         // 피버 게이지 애니메이션
         _showComboGauge.fillAmount = 1 - (_feverTime / _maxFeverTime);
 
@@ -221,6 +215,17 @@ public class GameManager : MonoBehaviour
         _gameTime = 0;
         _isGame = true;
         _showTime.fillAmount = 1;
+    }
+
+    void StartFever()
+    {
+        _isFever = true;
+        _feverTime = 0;
+        // 피버 시간 동안 맞춘 카드를 제외한 모든 카드를 보여준다.
+        foreach (Card curCard in _curCards)
+        {
+            curCard.FlipCard(true);
+        }
     }
 
     void ReturnCards()
@@ -310,8 +315,7 @@ public class GameManager : MonoBehaviour
             if (_comboStack == _maxComboStack && _isFever == false)
             {
                 // 피버 타임
-                _isFever = true;
-                _feverTime = 0;
+                StartFever();
             }
         }
 
@@ -530,6 +534,7 @@ public class GameManager : MonoBehaviour
      *  카드 사이즈 조금 더 크게 변경
      *  화면 비율 맞추는 코드 추가
      *  카드 애니메이션 추가
+ *  2023-03-15 16:49 -> 피버 애니메이션 수정, 정답 카드 이미지 추가
 
  * 변경 내역
  

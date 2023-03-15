@@ -436,6 +436,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cardBack: {fileID: 21300000, guid: 0985da5487689424187cf3b7a8808a29, type: 3}
   _cardFront: {fileID: 21300000, guid: 41653039f97b8c2429b587f7d967af07, type: 3}
+  _cardFrontCorrect: {fileID: 21300000, guid: 1a465158e51ae944c81d8d72125982b7, type: 3}
   _showAnimation: 1.15
   _speedTimes: 2
   _flipAnim: {fileID: 1623419323}
@@ -577,6 +578,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cardBack: {fileID: 21300000, guid: 0985da5487689424187cf3b7a8808a29, type: 3}
   _cardFront: {fileID: 21300000, guid: 41653039f97b8c2429b587f7d967af07, type: 3}
+  _cardFrontCorrect: {fileID: 21300000, guid: 1a465158e51ae944c81d8d72125982b7, type: 3}
   _showAnimation: 1.15
   _speedTimes: 2
   _flipAnim: {fileID: 1354969957}
@@ -1141,6 +1143,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cardBack: {fileID: 21300000, guid: 0985da5487689424187cf3b7a8808a29, type: 3}
   _cardFront: {fileID: 21300000, guid: 41653039f97b8c2429b587f7d967af07, type: 3}
+  _cardFrontCorrect: {fileID: 21300000, guid: 1a465158e51ae944c81d8d72125982b7, type: 3}
   _showAnimation: 1.15
   _speedTimes: 2
   _flipAnim: {fileID: 753041924}
@@ -1282,6 +1285,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cardBack: {fileID: 21300000, guid: 0985da5487689424187cf3b7a8808a29, type: 3}
   _cardFront: {fileID: 21300000, guid: 41653039f97b8c2429b587f7d967af07, type: 3}
+  _cardFrontCorrect: {fileID: 21300000, guid: 1a465158e51ae944c81d8d72125982b7, type: 3}
   _showAnimation: 1.15
   _speedTimes: 2
   _flipAnim: {fileID: 1680627808}
@@ -5572,6 +5576,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cardBack: {fileID: 21300000, guid: 0985da5487689424187cf3b7a8808a29, type: 3}
   _cardFront: {fileID: 21300000, guid: 41653039f97b8c2429b587f7d967af07, type: 3}
+  _cardFrontCorrect: {fileID: 21300000, guid: 1a465158e51ae944c81d8d72125982b7, type: 3}
   _showAnimation: 1.15
   _speedTimes: 2
   _flipAnim: {fileID: 1095333410}
@@ -7813,6 +7818,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cardBack: {fileID: 21300000, guid: 0985da5487689424187cf3b7a8808a29, type: 3}
   _cardFront: {fileID: 21300000, guid: 41653039f97b8c2429b587f7d967af07, type: 3}
+  _cardFrontCorrect: {fileID: 21300000, guid: 1a465158e51ae944c81d8d72125982b7, type: 3}
   _showAnimation: 1.15
   _speedTimes: 2
   _flipAnim: {fileID: 88245678}
@@ -8965,6 +8971,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cardBack: {fileID: 21300000, guid: 0985da5487689424187cf3b7a8808a29, type: 3}
   _cardFront: {fileID: 21300000, guid: 41653039f97b8c2429b587f7d967af07, type: 3}
+  _cardFrontCorrect: {fileID: 21300000, guid: 1a465158e51ae944c81d8d72125982b7, type: 3}
   _showAnimation: 1.15
   _speedTimes: 2
   _flipAnim: {fileID: 1912378525}
@@ -10912,6 +10919,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cardBack: {fileID: 21300000, guid: 0985da5487689424187cf3b7a8808a29, type: 3}
   _cardFront: {fileID: 21300000, guid: 41653039f97b8c2429b587f7d967af07, type: 3}
+  _cardFrontCorrect: {fileID: 21300000, guid: 1a465158e51ae944c81d8d72125982b7, type: 3}
   _showAnimation: 1.15
   _speedTimes: 2
   _flipAnim: {fileID: 1480126807}
@@ -11450,6 +11458,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cardBack: {fileID: 21300000, guid: 0985da5487689424187cf3b7a8808a29, type: 3}
   _cardFront: {fileID: 21300000, guid: 41653039f97b8c2429b587f7d967af07, type: 3}
+  _cardFrontCorrect: {fileID: 21300000, guid: 1a465158e51ae944c81d8d72125982b7, type: 3}
   _showAnimation: 1.15
   _speedTimes: 2
   _flipAnim: {fileID: 1247347846}
@@ -12538,6 +12547,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cardBack: {fileID: 21300000, guid: 0985da5487689424187cf3b7a8808a29, type: 3}
   _cardFront: {fileID: 21300000, guid: 41653039f97b8c2429b587f7d967af07, type: 3}
+  _cardFrontCorrect: {fileID: 21300000, guid: 1a465158e51ae944c81d8d72125982b7, type: 3}
   _showAnimation: 1.15
   _speedTimes: 2
   _flipAnim: {fileID: 785571579}
@@ -12679,6 +12689,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cardBack: {fileID: 21300000, guid: 0985da5487689424187cf3b7a8808a29, type: 3}
   _cardFront: {fileID: 21300000, guid: 41653039f97b8c2429b587f7d967af07, type: 3}
+  _cardFrontCorrect: {fileID: 21300000, guid: 1a465158e51ae944c81d8d72125982b7, type: 3}
   _showAnimation: 1.15
   _speedTimes: 2
   _flipAnim: {fileID: 666605988}
@@ -12820,6 +12831,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cardBack: {fileID: 21300000, guid: 0985da5487689424187cf3b7a8808a29, type: 3}
   _cardFront: {fileID: 21300000, guid: 41653039f97b8c2429b587f7d967af07, type: 3}
+  _cardFrontCorrect: {fileID: 21300000, guid: 1a465158e51ae944c81d8d72125982b7, type: 3}
   _showAnimation: 1.15
   _speedTimes: 2
   _flipAnim: {fileID: 589868306}
@@ -13359,6 +13371,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cardBack: {fileID: 21300000, guid: 0985da5487689424187cf3b7a8808a29, type: 3}
   _cardFront: {fileID: 21300000, guid: 41653039f97b8c2429b587f7d967af07, type: 3}
+  _cardFrontCorrect: {fileID: 21300000, guid: 1a465158e51ae944c81d8d72125982b7, type: 3}
   _showAnimation: 1.15
   _speedTimes: 2
   _flipAnim: {fileID: 959232953}
@@ -13553,6 +13566,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cardBack: {fileID: 21300000, guid: 0985da5487689424187cf3b7a8808a29, type: 3}
   _cardFront: {fileID: 21300000, guid: 41653039f97b8c2429b587f7d967af07, type: 3}
+  _cardFrontCorrect: {fileID: 21300000, guid: 1a465158e51ae944c81d8d72125982b7, type: 3}
   _showAnimation: 1.15
   _speedTimes: 2
   _flipAnim: {fileID: 1197025161}
@@ -15745,6 +15759,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cardBack: {fileID: 21300000, guid: 0985da5487689424187cf3b7a8808a29, type: 3}
   _cardFront: {fileID: 21300000, guid: 41653039f97b8c2429b587f7d967af07, type: 3}
+  _cardFrontCorrect: {fileID: 21300000, guid: 1a465158e51ae944c81d8d72125982b7, type: 3}
   _showAnimation: 1.15
   _speedTimes: 2
   _flipAnim: {fileID: 1536409587}
@@ -17774,6 +17789,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cardBack: {fileID: 21300000, guid: 0985da5487689424187cf3b7a8808a29, type: 3}
   _cardFront: {fileID: 21300000, guid: 41653039f97b8c2429b587f7d967af07, type: 3}
+  _cardFrontCorrect: {fileID: 21300000, guid: 1a465158e51ae944c81d8d72125982b7, type: 3}
   _showAnimation: 1.15
   _speedTimes: 2
   _flipAnim: {fileID: 245568726}
@@ -19219,6 +19235,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cardBack: {fileID: 21300000, guid: 0985da5487689424187cf3b7a8808a29, type: 3}
   _cardFront: {fileID: 21300000, guid: 41653039f97b8c2429b587f7d967af07, type: 3}
+  _cardFrontCorrect: {fileID: 21300000, guid: 1a465158e51ae944c81d8d72125982b7, type: 3}
   _showAnimation: 1.15
   _speedTimes: 2
   _flipAnim: {fileID: 113232264}
@@ -19494,6 +19511,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cardBack: {fileID: 21300000, guid: 0985da5487689424187cf3b7a8808a29, type: 3}
   _cardFront: {fileID: 21300000, guid: 41653039f97b8c2429b587f7d967af07, type: 3}
+  _cardFrontCorrect: {fileID: 21300000, guid: 1a465158e51ae944c81d8d72125982b7, type: 3}
   _showAnimation: 1.15
   _speedTimes: 2
   _flipAnim: {fileID: 439068407}
@@ -19745,6 +19763,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cardBack: {fileID: 21300000, guid: 0985da5487689424187cf3b7a8808a29, type: 3}
   _cardFront: {fileID: 21300000, guid: 41653039f97b8c2429b587f7d967af07, type: 3}
+  _cardFrontCorrect: {fileID: 21300000, guid: 1a465158e51ae944c81d8d72125982b7, type: 3}
   _showAnimation: 1.15
   _speedTimes: 2
   _flipAnim: {fileID: 2021979146}
@@ -20713,6 +20732,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cardBack: {fileID: 21300000, guid: 0985da5487689424187cf3b7a8808a29, type: 3}
   _cardFront: {fileID: 21300000, guid: 41653039f97b8c2429b587f7d967af07, type: 3}
+  _cardFrontCorrect: {fileID: 21300000, guid: 1a465158e51ae944c81d8d72125982b7, type: 3}
   _showAnimation: 1.15
   _speedTimes: 2
   _flipAnim: {fileID: 430474847}
@@ -21055,6 +21075,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cardBack: {fileID: 21300000, guid: 0985da5487689424187cf3b7a8808a29, type: 3}
   _cardFront: {fileID: 21300000, guid: 41653039f97b8c2429b587f7d967af07, type: 3}
+  _cardFrontCorrect: {fileID: 21300000, guid: 1a465158e51ae944c81d8d72125982b7, type: 3}
   _showAnimation: 1.15
   _speedTimes: 2
   _flipAnim: {fileID: 1495965842}
@@ -21196,6 +21217,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cardBack: {fileID: 21300000, guid: 0985da5487689424187cf3b7a8808a29, type: 3}
   _cardFront: {fileID: 21300000, guid: 41653039f97b8c2429b587f7d967af07, type: 3}
+  _cardFrontCorrect: {fileID: 21300000, guid: 1a465158e51ae944c81d8d72125982b7, type: 3}
   _showAnimation: 1.15
   _speedTimes: 2
   _flipAnim: {fileID: 1816636717}
@@ -21870,6 +21892,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cardBack: {fileID: 21300000, guid: 0985da5487689424187cf3b7a8808a29, type: 3}
   _cardFront: {fileID: 21300000, guid: 41653039f97b8c2429b587f7d967af07, type: 3}
+  _cardFrontCorrect: {fileID: 21300000, guid: 1a465158e51ae944c81d8d72125982b7, type: 3}
   _showAnimation: 1.15
   _speedTimes: 2
   _flipAnim: {fileID: 242143673}
@@ -23606,6 +23629,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cardBack: {fileID: 21300000, guid: 0985da5487689424187cf3b7a8808a29, type: 3}
   _cardFront: {fileID: 21300000, guid: 41653039f97b8c2429b587f7d967af07, type: 3}
+  _cardFrontCorrect: {fileID: 21300000, guid: 1a465158e51ae944c81d8d72125982b7, type: 3}
   _showAnimation: 1.15
   _speedTimes: 2
   _flipAnim: {fileID: 2042547776}
@@ -25808,6 +25832,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cardBack: {fileID: 21300000, guid: 0985da5487689424187cf3b7a8808a29, type: 3}
   _cardFront: {fileID: 21300000, guid: 41653039f97b8c2429b587f7d967af07, type: 3}
+  _cardFrontCorrect: {fileID: 21300000, guid: 1a465158e51ae944c81d8d72125982b7, type: 3}
   _showAnimation: 1.15
   _speedTimes: 2
   _flipAnim: {fileID: 96728147}

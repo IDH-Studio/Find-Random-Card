@@ -15,6 +15,7 @@ public class Card : MonoBehaviour
 {
     [SerializeField] private Sprite _cardBack;
     [SerializeField] private Sprite _cardFront;
+    [SerializeField] private Sprite _cardFrontCorrect;
 
     [Space(10)]
     [SerializeField] private float _showAnimation = 0.7f;
@@ -56,7 +57,7 @@ public class Card : MonoBehaviour
         if (animationName == "Card_Flip")
         {
             _showNumberText.text = _cardInfo.Number.ToString();
-            _buttonImage.sprite = _cardFront;
+            _buttonImage.sprite = _cardInfo.isCorrect == true ? _cardFrontCorrect : _cardFront;
         }
         else if (animationName == "Card_Flip_Reverse")
         {
@@ -98,10 +99,6 @@ public class Card : MonoBehaviour
 
         _button.onClick.AddListener(() =>
         {
-#if UNITY_EDITOR
-            Debug.Log("Click the Card");
-            Debug.Log(_isShow.ToString() + _cardInfo.isCorrect.ToString() + GameManager._instance.IsFever);
-#endif
             // 이미 보여준 카드가 아니라면 카드 클릭 시 카드를 보여주고 잠시 뒤 사라지게 한다.
             if (!_isShow && _cardInfo.isCorrect == false && !GameManager._instance.IsFever)
             {
@@ -112,6 +109,7 @@ public class Card : MonoBehaviour
             {
                 // 정답
                 _cardInfo.isCorrect = true;
+                _buttonImage.sprite = _cardFrontCorrect;
             }
         });
     }
@@ -135,20 +133,13 @@ public class Card : MonoBehaviour
 
     public void FlipCard(bool isShowNumber)
     {
+        if (_cardInfo.isCorrect) return;
+
         // 카드 뒷면 -> 앞면이 기본 애니메이션
         // 카드 앞면 -> 뒷면이 역 애니메이션
-        if (isShowNumber && _cardInfo.isCorrect == false)
-        {
-            // 카드 숫자가 보이도록 설정
-            // 카드 뒷면 -> 앞면
-            PlayAnimation("Card_Flip");
-        }
-        else
-        {
-            // 카드 숫자가 보이지 않도록 설정
-            // 카드 앞면 -> 뒷면
-            PlayAnimation("Card_Flip_Reverse");
-        }
+        string animationName = isShowNumber == true ? "Card_Flip" : "Card_Flip_Reverse";
+
+        PlayAnimation(animationName);
     }
 
     IEnumerator ShowNumber()
