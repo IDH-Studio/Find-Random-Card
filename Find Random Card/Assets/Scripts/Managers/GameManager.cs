@@ -84,6 +84,7 @@ public class GameManager : MonoBehaviour
 
     private GridLayoutGroup                     _cardLayoutGroup;
     private int                                 _gridSize;
+    private float                               _flipCardSize;
 
     // Show In Inspector
     [Header("▼ Objects")]
@@ -111,7 +112,9 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+#if UNITY_EDITOR
             print("게임 매니저가 존재합니다.");
+#endif
             Destroy(gameObject);
         }
 
@@ -130,6 +133,11 @@ public class GameManager : MonoBehaviour
         _curCards = new List<Card>();
 
         _cardLayoutGroup = _cardObj.gameObject.GetComponent<GridLayoutGroup>();
+    }
+
+    private void Start()
+    {
+        SetResolution();
     }
 
     private void Update()
@@ -259,7 +267,7 @@ public class GameManager : MonoBehaviour
 
             // 가져온 카드 오브젝트의 숫자 설정
             Card cardScript = _cardObj.GetChild(index).GetComponent<Card>();
-            cardScript.SetCardInfo(_newCards[index]);
+            cardScript.SetCardInfo(_newCards[index], _flipCardSize);
             cardScript.SetCardNumberSize(_gridSize);
             _curCards.Add(cardScript);
         }
@@ -322,7 +330,8 @@ public class GameManager : MonoBehaviour
         // 카드를 전부 뒤집는다. (카드를 전부 안 보이도록 바꾼다.)
         foreach (Card curCard in _curCards)
         {
-            curCard.FlipCard(false);
+            //curCard.FlipCard(false);
+            curCard.PreviewOver();
         }
 
         GameStart();
@@ -331,32 +340,38 @@ public class GameManager : MonoBehaviour
     public void SelectDifficulty(int gridSize)
     {
         int cellSize = 0;
+        int cellSpacing = 0;
         switch ((DIFFICULTY)gridSize)
         {
             case DIFFICULTY.EASY:
                 // 10초
                 _maxPreviewTime = 10;
                 _showDifficulty.text = "쉬움";
-                cellSize = 200;
+                cellSize = 300;
+                cellSpacing = 100;
                 break;
             case DIFFICULTY.NORMAL:
                 // 20초
                 _maxPreviewTime = 20;
                 _showDifficulty.text = "보통";
-                cellSize = 150;
+                cellSize = 250;
+                cellSpacing = 50;
                 break;
             case DIFFICULTY.HARD:
                 // 30초
                 _showDifficulty.text = "어려움";
                 _maxPreviewTime = 30;
-                cellSize = 100;
+                cellSize = 200;
+                cellSpacing = 50;
                 break;
         }
         _difficulty = (DIFFICULTY)gridSize;
         _gridSize = gridSize;
         _maxFeverTime = _maxPreviewTime / 5;
         // 그리드 사이즈 조절
-        _cardLayoutGroup.cellSize = new Vector2(cellSize, cellSize + 50);
+        _flipCardSize = cellSize * 0.8f;
+        _cardLayoutGroup.cellSize = new Vector2(_flipCardSize, cellSize);
+        _cardLayoutGroup.spacing = new Vector2(cellSpacing, cellSpacing);
     }
 
     public void GameStart()
@@ -400,6 +415,11 @@ public class GameManager : MonoBehaviour
         // 게임 오버 화면으로
         _screenManager.GoScreen("GameOver");
 
+        foreach(Card curCard in _curCards)
+        {
+            curCard.Init();
+        }
+
         // 걸린 시간 보여주기
         _showGameTimeInfo.text = "걸린 시간: " + _gameTime.ToString("F2");
         GameOver(true);
@@ -432,8 +452,6 @@ public class GameManager : MonoBehaviour
             // 만약 새 카드가 없으면 게임을 종료한다.
             GameClear();
             return;
-            //ShuffleCards();
-            //BringCards();
         }
 
         int findNumberIndex = Random.Range(0, _newCards.Count);
@@ -452,7 +470,9 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+#if UNITY_EDITOR
             print("오답입니다.");
+#endif
             StackCombo(false);
             return false;
         }
@@ -471,15 +491,49 @@ public class GameManager : MonoBehaviour
     {
         _isGame = !isPause;
     }
+
+    /* 해상도 설정하는 함수 */
+    public void SetResolution()
+    {
+        int setWidth = 1080; // 사용자 설정 너비
+        int setHeight = 1920; // 사용자 설정 높이
+
+        int deviceWidth = Screen.width; // 기기 너비 저장
+        int deviceHeight = Screen.height; // 기기 높이 저장
+
+        Screen.SetResolution(setWidth, (int)(((float)deviceHeight / deviceWidth) * setWidth), true); // SetResolution 함수 제대로 사용하기
+
+        if ((float)setWidth / setHeight < (float)deviceWidth / deviceHeight) // 기기의 해상도 비가 더 큰 경우
+        {
+            float newWidth = ((float)setWidth / setHeight) / ((float)deviceWidth / deviceHeight); // 새로운 너비
+            Camera.main.rect = new Rect((1f - newWidth) / 2f, 0f, newWidth, 1f); // 새로운 Rect 적용
+        }
+        else // 게임의 해상도 비가 더 큰 경우
+        {
+            float newHeight = ((float)deviceWidth / deviceHeight) / ((float)setWidth / setHeight); // 새로운 높이
+            Camera.main.rect = new Rect(0f, (1f - newHeight) / 2f, 1f, newHeight); // 새로운 Rect 적용
+        }
+    }
 }
 
 /*
- * 2023-03-05 00:30 -> 랜덤 숫자 뽑기 완성
- * 2023-03-05 18:21 -> 난이도 설정 및 화면 설정
- * 2023-03-06 19:34 -> 게임 시간 설정 및 미리보기 기능 제작
- * 2023-03-06 20:43 -> 게임 오버 화면 추가 및 콤보 기능 추가
- * 2023-03-07 12:20 -> 피버 기능 추가 (피버 시간은 미리보기 시간의 1/5배)
- * 2023-03-07 15:10 -> 난이도 설정 기능 변경
+ * 커밋 내역
+ *  2023-03-05 00:30 -> 랜덤 숫자 뽑기 완성
+ *  2023-03-05 18:21 -> 난이도 설정 및 화면 설정
+ *  2023-03-06 19:34 -> 게임 시간 설정 및 미리보기 기능 제작
+ *  2023-03-06 20:43 -> 게임 오버 화면 추가 및 콤보 기능 추가
+ *  2023-03-07 12:20 -> 피버 기능 추가 (피버 시간은 미리보기 시간의 1/5배)
+ *  2023-03-07 15:10 -> 난이도 설정 기능 변경
+ *  2023-03-07 22:56 -> UI 어긋난 것 수정
+ *  2023-03-15 15:01 ->
+     *  셀 사이즈 0.8로 고정
+     *  카드 사이즈 조금 더 크게 변경
+     *  화면 비율 맞추는 코드 추가
+     *  카드 애니메이션 추가
+
+ * 변경 내역
+ 
+
  * TODO
- *  
+ *  꾸미기
 */

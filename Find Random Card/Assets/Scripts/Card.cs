@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,22 +8,63 @@ public class CardInfo
 {
     public int Number { get; set; }
     public float PreviewTime { get; set; }
+    public bool isCorrect { get; set; } = false;
 }
 
 public class Card : MonoBehaviour
 {
+    [SerializeField] private Sprite _cardBack;
+    [SerializeField] private Sprite _cardFront;
+
+    [Space(10)]
+    [SerializeField] private float _showAnimation = 0.7f;
+    [SerializeField] private float _speedTimes = 1;
+
+    [Space(10)]
+    [SerializeField] private Animator _flipAnim;
+
     private CardInfo _cardInfo;
-    private Button button;
-    private Image buttonImage;
-    private TextMeshProUGUI showNumberText;
+    private Button _button;
+    private Image _buttonImage;
+    private SpriteRenderer _animationImage;
+    private TextMeshProUGUI _showNumberText;
     private bool _isShow = false;
 
     private void Awake()
     {
         _cardInfo = new CardInfo();
-        button = GetComponent<Button>();
-        buttonImage = GetComponent<Image>();
-        showNumberText = GetComponentInChildren<TextMeshProUGUI>();
+        _cardInfo.isCorrect = false;
+        _button = GetComponent<Button>();
+        _buttonImage = GetComponent<Image>();
+        _showNumberText = GetComponentInChildren<TextMeshProUGUI>();
+        _animationImage = GetComponentInChildren<SpriteRenderer>();
+    }
+
+
+    void PlayAnimation(string animationName, bool isPlay = true)
+    {
+        _buttonImage.color = new Color(0, 0, 0, 0);
+        _showNumberText.text = "";
+        _flipAnim.SetBool(animationName, isPlay);
+        StartCoroutine(Stop(animationName, 0.7f / _speedTimes));
+    }
+
+    IEnumerator Stop(string animationName, float delayTime)
+    {
+        yield return new WaitForSeconds(delayTime);
+        _flipAnim.SetBool(animationName, false);
+        if (animationName == "Card_Flip")
+        {
+            _showNumberText.text = _cardInfo.Number.ToString();
+            _buttonImage.sprite = _cardFront;
+        }
+        else if (animationName == "Card_Flip_Reverse")
+        {
+            _showNumberText.text = "";
+            _buttonImage.sprite = _cardBack;
+
+        }
+        _buttonImage.color = new Color(255, 255, 255, 255);
     }
 
     public void SetCardNumberSize(int gridSize)
@@ -36,27 +76,34 @@ public class Card : MonoBehaviour
         switch (gridSize)
         {
             case 3:
-                showNumberText.fontSize = 100;
+                _showNumberText.fontSize = 100;
                 break;
             case 4:
-                showNumberText.fontSize = 80;
+                _showNumberText.fontSize = 80;
                 break;
             case 5:
-                showNumberText.fontSize = 60;
+                _showNumberText.fontSize = 60;
                 break;
         }
     }
 
-    public void SetCardInfo(CardInfo cardInfo)
+    public void SetCardInfo(CardInfo cardInfo, float flipCardSize)
     {
+        _buttonImage.sprite = _cardFront;
         _cardInfo.Number = cardInfo.Number;
         _cardInfo.PreviewTime = cardInfo.PreviewTime;
-        showNumberText.text = cardInfo.Number.ToString();
+        _cardInfo.isCorrect = false;
+        _showNumberText.text = cardInfo.Number.ToString();
+        _flipAnim.transform.localScale = new Vector2(flipCardSize, flipCardSize);
 
-        button.onClick.AddListener(() =>
+        _button.onClick.AddListener(() =>
         {
+#if UNITY_EDITOR
+            Debug.Log("Click the Card");
+            Debug.Log(_isShow.ToString() + _cardInfo.isCorrect.ToString() + GameManager._instance.IsFever);
+#endif
             // 이미 보여준 카드가 아니라면 카드 클릭 시 카드를 보여주고 잠시 뒤 사라지게 한다.
-            if (!_isShow && _cardInfo.Number != -1 && !GameManager._instance.IsFever)
+            if (!_isShow && _cardInfo.isCorrect == false && !GameManager._instance.IsFever)
             {
                 StartCoroutine(ShowNumber());
             }
@@ -64,25 +111,59 @@ public class Card : MonoBehaviour
             if (GameManager._instance.CheckNumber(_cardInfo))
             {
                 // 정답
-                _cardInfo.Number = -1;
-                buttonImage.color = new Color(150, 150, 150);
+                _cardInfo.isCorrect = true;
             }
         });
     }
 
+    public void PreviewOver()
+    {
+        _showNumberText.text = "";
+        PlayAnimation("Card_Flip_Reverse");
+    }
+
+    public void Init()
+    {
+        _animationImage.sprite = null;
+        _cardInfo.isCorrect = false;
+        _isShow = false;
+        _buttonImage.sprite = _cardFront;
+        _buttonImage.color = new Color(255, 255, 255, 255);
+        _button.onClick.RemoveAllListeners();
+        StopAllCoroutines();
+    }
+
     public void FlipCard(bool isShowNumber)
     {
-        // 임시로 텍스트가 안보이도록 설정
-        if (isShowNumber && _cardInfo.Number != -1) { showNumberText.text = _cardInfo.Number.ToString(); }
-        else { showNumberText.text = ""; }
+        // 카드 뒷면 -> 앞면이 기본 애니메이션
+        // 카드 앞면 -> 뒷면이 역 애니메이션
+        if (isShowNumber && _cardInfo.isCorrect == false)
+        {
+            // 카드 숫자가 보이도록 설정
+            // 카드 뒷면 -> 앞면
+            PlayAnimation("Card_Flip");
+        }
+        else
+        {
+            // 카드 숫자가 보이지 않도록 설정
+            // 카드 앞면 -> 뒷면
+            PlayAnimation("Card_Flip_Reverse");
+        }
     }
 
     IEnumerator ShowNumber()
     {
-        showNumberText.text = _cardInfo.Number.ToString();
+        // 카드 뒷면 -> 앞면
+        PlayAnimation("Card_Flip");
         _isShow = true;
-        yield return new WaitForSeconds(0.8f);
-        if (_cardInfo.Number != -1) showNumberText.text = "";
+
+        yield return new WaitForSeconds(_showAnimation / _speedTimes);
+
+        if (_cardInfo.isCorrect == false)
+        {
+            // 카드 앞면 -> 뒷면
+            PlayAnimation("Card_Flip_Reverse");
+        }
         _isShow = false;
     }
 }

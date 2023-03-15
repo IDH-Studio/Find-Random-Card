@@ -35,7 +35,12 @@ public class ScreenManager : MonoBehaviour
     public void ScreenClear()
     {
         // 가장 최근에 보여진 화면 없애기
-        ShowScreen(false, _screenStack.Peek());
+        // 모든 화면 없애면서 활성화된 화면은 화면 끄고 없애기
+        //ShowScreen(false, _screenStack.Peek());
+        while(_screenStack.Count > 0)
+        {
+            ShowScreen(false, _screenStack.Pop());
+        }
 
         // _screenStack 초기화
         _screenStack.Clear();

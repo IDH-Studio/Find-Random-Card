@@ -381,6 +381,7 @@
 -r:"Library/Bee/artifacts/1300b0aE.dag/UnityEditor.UI.ref.dll"
 -r:"Library/Bee/artifacts/1300b0aE.dag/UnityEngine.UI.ref.dll"
 "Assets/Scripts/Card.cs"
+"Assets/Scripts/Card_Test.cs"
 "Assets/Scripts/Managers/GameManager.cs"
 "Assets/Scripts/Managers/PrefabManager.cs"
 "Assets/Scripts/Managers/ScreenManager.cs"
