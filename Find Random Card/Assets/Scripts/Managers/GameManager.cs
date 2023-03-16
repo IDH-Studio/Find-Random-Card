@@ -89,7 +89,7 @@ public class GameManager : MonoBehaviour
     // Show In Inspector
     [Header("▼ Objects")]
     [SerializeField] private Transform          _cardObj;
-    [SerializeField] private Image              _showTime;
+    [SerializeField] private Slider             _showTime;
     [SerializeField] private Image              _showComboGauge;
 
     [Space(10)]
@@ -200,7 +200,7 @@ public class GameManager : MonoBehaviour
 
         _gameTime += Time.deltaTime;
 
-        _showTime.fillAmount = 1 - (_gameTime / _maxGameTime);
+        _showTime.value = 1 - (_gameTime / _maxGameTime);
 
         if (_gameTime >= _maxGameTime)
         {
@@ -214,7 +214,9 @@ public class GameManager : MonoBehaviour
     {
         _gameTime = 0;
         _isGame = true;
-        _showTime.fillAmount = 1;
+        Time.timeScale = 1;
+        _showTime.value = 1;
+        _showComboGauge.fillAmount = 0;
     }
 
     void StartFever()
@@ -280,6 +282,7 @@ public class GameManager : MonoBehaviour
 
     void ShowPreview()
     {
+        Time.timeScale = 0;
         _previewTime = 0;
         _isPreview = true;
 
@@ -414,7 +417,7 @@ public class GameManager : MonoBehaviour
     {
         // 모든 카드를 다 찾았을 때
         _showComboGauge.fillAmount = 0;
-        _showTime.fillAmount = 0;
+        _showTime.value = 0;
 
         // 게임 오버 화면으로
         _screenManager.GoScreen("GameOver");
@@ -493,6 +496,7 @@ public class GameManager : MonoBehaviour
 
     public void IsGamePause(bool isPause)
     {
+        Time.timeScale = isPause == true ? 0 : 1;
         _isGame = !isPause;
     }
 
@@ -535,10 +539,12 @@ public class GameManager : MonoBehaviour
      *  화면 비율 맞추는 코드 추가
      *  카드 애니메이션 추가
  *  2023-03-15 16:49 -> 피버 애니메이션 수정, 정답 카드 이미지 추가
+ *  2023-03-16 18:16 -> 시계 아이콘 및 애니메이션 추가, 시간 조정 추가
 
  * 변경 내역
  
 
  * TODO
  *  꾸미기
+ *  난이도 선택 부분 꾸미기
 */
