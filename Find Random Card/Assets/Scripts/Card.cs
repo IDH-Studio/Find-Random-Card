@@ -27,9 +27,12 @@ public class Card : MonoBehaviour
     private CardInfo _cardInfo;
     private Button _button;
     private Image _buttonImage;
-    private SpriteRenderer _animationImage;
     private TextMeshProUGUI _showNumberText;
     private bool _isShow = false;
+
+    // 애니메이션 이름
+    private string _cardFlipAnim = "Card_Flip";
+    private string _ReverseCardFlipAnim = "Card_Flip_Reverse";
 
     private void Awake()
     {
@@ -38,7 +41,6 @@ public class Card : MonoBehaviour
         _button = GetComponent<Button>();
         _buttonImage = GetComponent<Image>();
         _showNumberText = GetComponentInChildren<TextMeshProUGUI>();
-        _animationImage = GetComponentInChildren<SpriteRenderer>();
     }
 
 
@@ -54,12 +56,12 @@ public class Card : MonoBehaviour
     {
         yield return new WaitForSeconds(delayTime);
         _flipAnim.SetBool(animationName, false);
-        if (animationName == "Card_Flip")
+        if (animationName == _cardFlipAnim)
         {
             _showNumberText.text = _cardInfo.Number.ToString();
             _buttonImage.sprite = _cardInfo.isCorrect == true ? _cardFrontCorrect : _cardFront;
         }
-        else if (animationName == "Card_Flip_Reverse")
+        else if (animationName == _ReverseCardFlipAnim)
         {
             _showNumberText.text = "";
             _buttonImage.sprite = _cardBack;
@@ -99,6 +101,8 @@ public class Card : MonoBehaviour
 
         _button.onClick.AddListener(() =>
         {
+            if (_flipAnim.GetBool(_cardFlipAnim) || _flipAnim.GetBool(_ReverseCardFlipAnim)) return;
+
             // 이미 보여준 카드가 아니라면 카드 클릭 시 카드를 보여주고 잠시 뒤 사라지게 한다.
             if (!_isShow && _cardInfo.isCorrect == false && !GameManager._instance.IsFever)
             {
@@ -117,12 +121,13 @@ public class Card : MonoBehaviour
     public void PreviewOver()
     {
         _showNumberText.text = "";
-        PlayAnimation("Card_Flip_Reverse");
+        PlayAnimation(_ReverseCardFlipAnim);
     }
 
     public void Init()
     {
-        _animationImage.sprite = null;
+        _flipAnim.SetBool(_cardFlipAnim, false);
+        _flipAnim.SetBool(_ReverseCardFlipAnim, false);
         _cardInfo.isCorrect = false;
         _isShow = false;
         _buttonImage.sprite = _cardFront;
@@ -137,7 +142,7 @@ public class Card : MonoBehaviour
 
         // 카드 뒷면 -> 앞면이 기본 애니메이션
         // 카드 앞면 -> 뒷면이 역 애니메이션
-        string animationName = isShowNumber == true ? "Card_Flip" : "Card_Flip_Reverse";
+        string animationName = isShowNumber == true ? _cardFlipAnim : _ReverseCardFlipAnim;
 
         PlayAnimation(animationName);
     }
@@ -145,7 +150,7 @@ public class Card : MonoBehaviour
     IEnumerator ShowNumber()
     {
         // 카드 뒷면 -> 앞면
-        PlayAnimation("Card_Flip");
+        PlayAnimation(_cardFlipAnim);
         _isShow = true;
 
         yield return new WaitForSeconds(_showAnimation / _speedTimes);
@@ -153,7 +158,7 @@ public class Card : MonoBehaviour
         if (_cardInfo.isCorrect == false)
         {
             // 카드 앞면 -> 뒷면
-            PlayAnimation("Card_Flip_Reverse");
+            PlayAnimation(_ReverseCardFlipAnim);
         }
         _isShow = false;
     }

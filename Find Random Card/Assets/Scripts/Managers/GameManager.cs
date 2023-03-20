@@ -68,6 +68,14 @@ public class GameManager : MonoBehaviour
     private float                               _maxFeverTime;
     private float                               _feverTime = 0;
     private bool                                _isFever = false;
+    private sbyte                               _comboStatus = 0;
+    [SerializeField] private float              _maxComboAnimationTime = 0.5f;
+    private float                               _comboAnimationTime = 0f;
+    private float                               _comboPart;
+    private float                               _comboStackPoint; // _comboPart * _comboStack
+    private float                               _startValue;    // 콤보 애니메이션에 필요한 변수
+    private float                               _endValue;      // 콤보 애니메이션에 필요한 변수
+
 
     // Getter, Setter
     public DIFFICULTY                           Difficulty { get { return _difficulty; } }
@@ -133,6 +141,9 @@ public class GameManager : MonoBehaviour
         _curCards = new List<Card>();
 
         _cardLayoutGroup = _cardObj.gameObject.GetComponent<GridLayoutGroup>();
+
+        _comboPart = 1.0f / _maxComboStack;
+        _comboStackPoint = _comboPart * _comboStack;
     }
 
     private void Start()
@@ -142,6 +153,9 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        // 콤보
+        Combo();
+
         // 피버
         Fever();
 
@@ -152,8 +166,32 @@ public class GameManager : MonoBehaviour
         Game();
     }
 
-
     // Update 관련 함수
+    void Combo()
+    {
+        if (_comboStatus == 0 && !_isFever) return;
+
+        // 경과 시간 업데이트
+        _comboAnimationTime += Time.deltaTime;
+
+        // 애니메이션 진행 상태 계산
+        float progress = Mathf.Clamp01(_comboAnimationTime / _maxComboAnimationTime);
+
+        // 현재 값 계산
+        _startValue = Mathf.Lerp(_startValue, _endValue, progress);
+
+        // 현재 값으로 애니메이션 적용
+        _showComboGauge.fillAmount = _startValue;
+
+        // 애니메이션 종료 체크
+        if (progress >= 1f)
+        {
+            _comboStatus = 0;
+            _comboAnimationTime = 0;
+            return;
+        }
+    }
+
     void Fever()
     {
         if (!_isFever) return;
@@ -169,6 +207,7 @@ public class GameManager : MonoBehaviour
             _isFever = false;
             _feverTime = 0;
             _showComboGauge.fillAmount = 0;
+            _comboStack = 0;
 
             foreach (Card curCard in _curCards)
             {
@@ -210,14 +249,6 @@ public class GameManager : MonoBehaviour
     }
 
     // User Function
-    void GameInit()
-    {
-        _gameTime = 0;
-        _isGame = true;
-        Time.timeScale = 1;
-        _showTime.value = 1;
-        _showComboGauge.fillAmount = 0;
-    }
 
     void StartFever()
     {
@@ -282,7 +313,7 @@ public class GameManager : MonoBehaviour
 
     void ShowPreview()
     {
-        Time.timeScale = 0;
+        Time.timeScale = 1;
         _previewTime = 0;
         _isPreview = true;
 
@@ -292,14 +323,24 @@ public class GameManager : MonoBehaviour
 
     void ShowComboGauge()
     {
-        _showComboGauge.fillAmount = (1.0f / _maxComboStack) * _comboStack;
+        _showComboGauge.fillAmount = _comboPart * _comboStack;
     }
 
     void StackCombo(bool isCombo)
     {
+        _comboStackPoint = _comboPart * _comboStack;
         if (!isCombo)
         {
             // 콤보가 안쌓임 (Easy, Normal이면 콤보가 한 칸 깎이고 Hard면 전부 깎임)
+            if (_comboStatus != -1)
+            {
+                // 만약 오답이 아니었다가 오답인 경우에는 _comboStatus도 변화하고 _startValue도 변화한다.
+                _comboStatus = -1;
+                _startValue = _comboStackPoint;
+            }
+
+            // 만약 이전에도 오답이고 현재도 오답인 경우 _startValue의 변화는 없다.
+
             switch (_difficulty)
             {
                 case DIFFICULTY.EASY:
@@ -310,11 +351,23 @@ public class GameManager : MonoBehaviour
                     _comboStack = 0;
                     break;
             }
+
+            _endValue = _comboPart * _comboStack;
         }
         else
         {
             // 콤보가 쌓임
+
+            if (_comboStatus != 1)
+            {
+                // 만약 정답이 아니었다가 정답인 경우에는 _comboStatus도 변화하고 _startValue도 변화한다.
+                _comboStatus = 1;
+                _startValue = _comboStackPoint;
+            }
+
             _comboStack = (_comboStack + 1 > _maxComboStack) ? _comboStack : _comboStack + 1;
+            _endValue = _comboPart * _comboStack;
+
             if (_comboStack == _maxComboStack && _isFever == false)
             {
                 // 피버 타임
@@ -322,8 +375,23 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        ShowComboGauge();
+        //ShowComboGauge();
     }
+
+    void GameStart()
+    {
+        // 미리보기가 끝난 후 미리보기 화면을 끄고 제대로 게임을 시작한다.
+        _gameTime = 0;
+        _comboStack = 0;
+        _feverTime = 0;
+        _isFever = false;
+        Time.timeScale = 1;
+        _showTime.value = 1;
+        _showComboGauge.fillAmount = 0;
+
+        _isGame = true;
+    }
+
 
     // public 함수
     public void PreviewOver()
@@ -381,12 +449,7 @@ public class GameManager : MonoBehaviour
         _cardLayoutGroup.spacing = new Vector2(cellSpacing, cellSpacing);
     }
 
-    public void GameStart()
-    {
-        // 미리보기가 끝난 후 미리보기 화면을 끄고 제대로 게임을 시작한다.
-        GameInit();
-    }
-
+    // Difficulty Screen에서 게임 시작 버튼을 누를 시 호출
     public void GameReady()
     {
         // 카드 배치, 미리보기 보여주기
@@ -395,7 +458,6 @@ public class GameManager : MonoBehaviour
         // 그리드 사이즈에 맞게 카드 사이즈 조절
         //int cellSize = -50 * _gridSize + 400;
         //_cardLayoutGroup.cellSize = new Vector2(cellSize, cellSize + 50);
-
         /*
          * 게임 시작 시 카드 종류가 저장되어 있는 리스트 중 25(pow(n))개를 골라 가져온다.
         */
@@ -415,32 +477,34 @@ public class GameManager : MonoBehaviour
 
     public void GameClear()
     {
-        // 모든 카드를 다 찾았을 때
-        _showComboGauge.fillAmount = 0;
-        _showTime.value = 0;
+        GameOver(true);
 
         // 게임 오버 화면으로
         _screenManager.GoScreen("GameOver");
 
-        foreach(Card curCard in _curCards)
-        {
-            curCard.Init();
-        }
-
         // 걸린 시간 보여주기
         _showGameTimeInfo.text = "걸린 시간: " + _gameTime.ToString("F2");
-        GameOver(true);
     }
 
     public void GameOver(bool isClear = false)
     {
-        // 변수 초기화
-        _comboStack = 0;
-        _feverTime = 0;
-        _isFever = false;
         _isGame = false;
+
+        foreach (Card curCard in _curCards)
+        {
+            curCard.Init();
+        }
+
+        _showComboGauge.fillAmount = 0;
+        _showTime.value = 0;
+
+        // 변수 초기화
+        _comboStatus = 0;
         _isPreview = false;
         _previewTime = 0;
+        _comboAnimationTime = 0;
+        _startValue = 0;
+        _endValue = 0;
         _curCards.Clear();
 
         // 카드 반납
@@ -448,6 +512,7 @@ public class GameManager : MonoBehaviour
 
         // 화면 초기화 -> 게임 오버 화면으로
         if (!isClear) _screenManager.ScreenClear();
+        //_screenManager.ScreenClear();
     }
 
     public void ChangeNumber()
@@ -472,7 +537,7 @@ public class GameManager : MonoBehaviour
         {
             _newCards.Remove(_findCard);
             ChangeNumber();
-            StackCombo(true);
+            if (!_isFever) StackCombo(true);
             return true;
         }
         else
@@ -480,7 +545,7 @@ public class GameManager : MonoBehaviour
 #if UNITY_EDITOR
             print("오답입니다.");
 #endif
-            StackCombo(false);
+            if (!_isFever) StackCombo(false);
             return false;
         }
     }
@@ -540,11 +605,28 @@ public class GameManager : MonoBehaviour
      *  카드 애니메이션 추가
  *  2023-03-15 16:49 -> 피버 애니메이션 수정, 정답 카드 이미지 추가
  *  2023-03-16 18:16 -> 시계 아이콘 및 애니메이션 추가, 시간 조정 추가
+ *  2023-03-20 16:54 -> 인게임 시간, 콤보 이미지, 애니메이션 추가, 각종 버그 수정(난이도 버튼 버그, 미리보기 시간 버그, 카드 애니메이션 버그, 콤보 버그 등)
 
  * 변경 내역
- 
+ * 
 
  * TODO
  *  꾸미기
  *  난이도 선택 부분 꾸미기
+*/
+
+
+/*
+ * 버그 기록
+    * 2023-03-20
+        * 게임 두판 진행 후 미리보기할 때 카드가 저절로 넘어가며 Fever상태로 돌입됨      O
+        * 게임 시작과 동시에 카드를 터치하면 애니메이션이 실행되지 않음                  O
+*/
+
+
+/*
+ * 버그 수정 기록
+ * 2023-03-20 15:37
+    * 애니메이션 실행 후 이미지가 남는 버그가 있을 경우 애니메이션을 실행하는 오브젝트의 SpriteRenderer를 수정하는 것이 아니라
+    * 애니메이션의 실행을 중단하면 해결된다.
 */

@@ -52,7 +52,7 @@ public class ScreenManager : MonoBehaviour
     {
         // 현재 화면을 스택에서 Pop하여 끈 뒤 가장 최근에 활성화된 화면을 다시 켠다.
         ShowScreen(false, _screenStack.Pop());
-        ShowScreen(true, _screenStack.Peek());
+        //ShowScreen(true, _screenStack.Peek());
     }
 
     public void GoScreen(string screenName)

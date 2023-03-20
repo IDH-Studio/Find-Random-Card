@@ -15,6 +15,15 @@ public class SelectDifficulty : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI _showDifficultyInfo;
 
+    [Space(20)]
+    [Header("Difficulty Info")]
+    [TextArea]
+    [SerializeField] private string _easyInfo;
+    [TextArea]
+    [SerializeField] private string _normalInfo;
+    [TextArea]
+    [SerializeField] private string _hardInfo;
+
     private float[]         _scrollPageValues;
     private float           _valueDistance = 0;
     private int             _currentPage = 0;
@@ -53,7 +62,7 @@ public class SelectDifficulty : MonoBehaviour
     {
         if (_isSwipe) return;
 
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         if (Input.GetMouseButtonDown(0))
         {
             _startTouchX = Input.mousePosition.x;
@@ -63,9 +72,9 @@ public class SelectDifficulty : MonoBehaviour
             _endTouchX = Input.mousePosition.x;
             UpdateSwipe();
         }
-        #endif
+#endif
 
-        #if UNITY_ANDROID
+#if UNITY_ANDROID
         if (Input.touchCount == 1)
         {
             Touch touch = Input.GetTouch(0);
@@ -80,7 +89,7 @@ public class SelectDifficulty : MonoBehaviour
                 UpdateSwipe();
             }
         }
-        #endif
+#endif
 
         ShowDifficultyInfo();
     }
@@ -118,22 +127,26 @@ public class SelectDifficulty : MonoBehaviour
         switch ((DIFFICULTY)(_currentPage + 3))
         {
             case DIFFICULTY.EASY:
-                info = "3x3의 카드가 나타나며\n" +
-                    "10초의 미리보기 시간이 주어집니다.";
+                //info = "3x3의 카드가 나타나며\n" +
+                //    "10초의 미리보기\n시간이 주어집니다.";
+                info = _easyInfo;
                 break;
             case DIFFICULTY.NORMAL:
-                info = "4x4의 카드가 나타나며\n" +
-                    "20초의 미리보기 시간이 주어집니다.";
+                //info = "4x4의 카드가 나타나며\n" +
+                //    "20초의 미리보기\n시간이 주어집니다.";
+                info = _normalInfo;
                 break;
             case DIFFICULTY.HARD:
-                info = "5x5의 카드가 나타나며\n" +
-                    "30초의 미리보기 시간이 주어집니다.";
+                //info = "5x5의 카드가 나타나며\n" +
+                //    "30초의 미리보기\n시간이 주어집니다.";
+                info = _hardInfo;
                 break;
         }
 
         _showDifficultyInfo.text = info;
     }
 
+    // 난이도 선택 화살표 버튼
     public void SelectPage(string direction)
     {
         if (direction == "next" && _currentPage < _maxPage - 1)
@@ -159,7 +172,7 @@ public class SelectDifficulty : MonoBehaviour
 
         while (percent < 1)
         {
-            current += Time.deltaTime;
+            current += 0.01f;
             percent = current / _swipeTime;
 
             _scrollBar.value = Mathf.Lerp(start, _scrollPageValues[index], percent);
