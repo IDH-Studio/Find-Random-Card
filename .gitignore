@@ -60,3 +60,6 @@ Find Random Card/crashlytics-build.properties
 
 # Resource files
 /Resources/
+
+# Bigger Than 100M
+Find-Random-Card/*.bundle

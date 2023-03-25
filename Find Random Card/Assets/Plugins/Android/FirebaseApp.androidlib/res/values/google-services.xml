@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@string/firebase_database_url,@string/gcm_defaultSenderId,@string/google_storage_bucket,@string/project_id,@string/google_api_key,@string/google_crash_reporting_api_key,@string/google_app_id,@string/default_web_client_id">
+  <string name="firebase_database_url" translatable="false">https://find-random-card-default-rtdb.firebaseio.com</string>
+  <string name="gcm_defaultSenderId" translatable="false">901114710393</string>
+  <string name="google_storage_bucket" translatable="false">find-random-card.appspot.com</string>
+  <string name="project_id" translatable="false">find-random-card</string>
+  <string name="google_api_key" translatable="false">AIzaSyAvXnA8llgJZqBGSW9-w67myJcImai9C14</string>
+  <string name="google_crash_reporting_api_key" translatable="false">AIzaSyAvXnA8llgJZqBGSW9-w67myJcImai9C14</string>
+  <string name="google_app_id" translatable="false">1:901114710393:android:0d7672d7e58c22f65a07a8</string>
+  <string name="default_web_client_id" translatable="false">901114710393-0h2pid646o8h9inkiht31vniim95frs3.apps.googleusercontent.com</string>
+</resources>

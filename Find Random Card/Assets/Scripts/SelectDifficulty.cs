@@ -159,6 +159,17 @@ public class SelectDifficulty : MonoBehaviour
         }
 
         GameManager._instance.SelectDifficulty(_currentPage + 3);
+        ShowDifficultyInfo();
+        StartCoroutine(OnSwipeOneStep(_currentPage));
+    }
+
+    // 난이도 클릭 시 버튼 이동
+    public void ButtonClickMove(int difficulty)
+    {
+        // difficulty
+        // 0: Easy, 1: Normal, 2: Hard
+        ShowDifficultyInfo();
+        _currentPage = difficulty;
         StartCoroutine(OnSwipeOneStep(_currentPage));
     }
 

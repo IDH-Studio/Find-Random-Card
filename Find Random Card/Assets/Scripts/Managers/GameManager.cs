@@ -6,9 +6,11 @@ using System.Linq;
 using TMPro;
 using TMPro.Examples;
 using Unity.Mathematics;
+using Unity.VisualScripting;
 using Unity.VisualScripting.FullSerializer;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -48,9 +50,11 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager                   _instance;
 
-    // 게임 관련 변수
+    // 난이도 관련 변수
     private DIFFICULTY                          _difficulty;
+    private string[]                            _difficultyTypes = { "쉬움", "보통", "어려움" };
 
+    // 게임 관련 변수
     // 게임 
     [Header("▼ Variables")]
     [SerializeField] private float              _maxGameTime = 60f;
@@ -80,6 +84,7 @@ public class GameManager : MonoBehaviour
     // Getter, Setter
     public DIFFICULTY                           Difficulty { get { return _difficulty; } }
     public bool                                 IsFever { get { return _isFever; } }
+    public float                                GameTime { get { return _gameTime; } }
 
 
     // 카드 관련 변수
@@ -99,6 +104,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform          _cardObj;
     [SerializeField] private Slider             _showTime;
     [SerializeField] private Image              _showComboGauge;
+    [SerializeField] private TMP_InputField     _nickname;
 
     [Space(10)]
     [Header("▼ Text Objects")]
@@ -106,11 +112,16 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI    _showDifficulty;
     [SerializeField] private TextMeshProUGUI    _showRemainPreviewTime;
     [SerializeField] private TextMeshProUGUI    _showGameTimeInfo;
+    [SerializeField] private TextMeshProUGUI    _showGameoverDifficulty;
 
     [Space(10)]
     [Header("▼ Managers")]
     public Transform                            _objectManager;
     public ScreenManager                        _screenManager;
+    public SoundManager                         _soundManager;
+    public SettingManager                       _settingManager;
+    public DatabaseManager                      _databaseManager;
+    public PrefabManager                        _prefabManager;
     
     private void Awake()
     {
@@ -149,6 +160,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         SetResolution();
+        _soundManager.Play(false, "StartMusic");
     }
 
     private void Update()
@@ -380,6 +392,9 @@ public class GameManager : MonoBehaviour
 
     void GameStart()
     {
+        // 난이도에 맞게 게임 세팅
+        //GameSetting();
+
         // 미리보기가 끝난 후 미리보기 화면을 끄고 제대로 게임을 시작한다.
         _gameTime = 0;
         _comboStack = 0;
@@ -391,6 +406,17 @@ public class GameManager : MonoBehaviour
 
         _isGame = true;
     }
+
+    //void GameSetting()
+    //{
+    //    _maxFeverTime = _maxPreviewTime / 5;
+    //    // 그리드 사이즈 조절
+    //    _flipCardSize = _cellSize * 0.8f;
+    //    _cardLayoutGroup.cellSize = new Vector2(_flipCardSize, _cellSize);
+    //    _cardLayoutGroup.spacing = new Vector2(_cellSpacing, _cellSpacing);
+    //    _databaseManager.SetDatabase(_difficulty);
+    //    _showGameoverDifficulty.text = "난이도: " + _difficultyTypes[(int)_difficulty - 3];
+    //}
 
 
     // public 함수
@@ -447,6 +473,8 @@ public class GameManager : MonoBehaviour
         _flipCardSize = cellSize * 0.8f;
         _cardLayoutGroup.cellSize = new Vector2(_flipCardSize, cellSize);
         _cardLayoutGroup.spacing = new Vector2(cellSpacing, cellSpacing);
+        _databaseManager.SetDatabase(_difficulty);
+        _showGameoverDifficulty.text = "난이도: " + _difficultyTypes[(int)_difficulty - 3];
     }
 
     // Difficulty Screen에서 게임 시작 버튼을 누를 시 호출
@@ -478,6 +506,9 @@ public class GameManager : MonoBehaviour
     public void GameClear()
     {
         GameOver(true);
+
+        // 데이터 가져오기
+        _databaseManager.GetDatas();
 
         // 게임 오버 화면으로
         _screenManager.GoScreen("GameOver");
@@ -587,6 +618,35 @@ public class GameManager : MonoBehaviour
             Camera.main.rect = new Rect(0f, (1f - newHeight) / 2f, 1f, newHeight); // 새로운 Rect 적용
         }
     }
+
+    /* 데이터 저장 함수 */
+    public void SaveScore()
+    {
+        string nickname = _nickname.text;
+
+        if (nickname == "" || nickname.Length > 7)
+        {
+            return;
+        }
+
+        // ½º??¾? ???? ±?´?
+        if (_databaseManager.WriteData(nickname, _gameTime))
+        {
+#if UNITY_EDITOR
+            print("데이터 쓰기 성공");
+#endif
+        }
+        else
+        {
+#if UNITY_EDITOR
+            print("데이터 쓰기 실패");
+#endif
+        }
+        _nickname.text = "";
+        _screenManager.PrevScreen();
+
+        _databaseManager.GetDatas(true);
+    }
 }
 
 /*
@@ -608,11 +668,26 @@ public class GameManager : MonoBehaviour
  *  2023-03-20 16:54 -> 인게임 시간, 콤보 이미지, 애니메이션 추가, 각종 버그 수정(난이도 버튼 버그, 미리보기 시간 버그, 카드 애니메이션 버그, 콤보 버그 등)
 
  * 변경 내역
- * 
+    * 배경화면 추가
+    * 정답일 시 파티클 보이게 파티클 추가
+    * 카드 이미지 및 애니메이션 변경
+    * 배경음, 효과음 추가
+    * 설정 화면 추가
+    * 게임 오버 화면 수정
+    * DB연동
 
  * TODO
- *  꾸미기
- *  난이도 선택 부분 꾸미기
+    * 꾸미기
+    * 난이도 선택 부분 꾸미기
+    * 음악 넣기(배경음, 효과음) -> 필요한 음악 더 있으면 추가해야 함(피버 음악, 오답 효과음(미정))
+    * 튜토리얼 화면 추가 -> 게임 오버 화면 튜토리얼 추가 요망
+    * =========================
+    * 광고 추가
+    * 미리 랭킹을 확인할 수 있도록
+    * 난이도 마다 진행 시간 다르게 하고 오답 시 남은 시간 1~2초 정도 깎아버리기(미정)
+
+ * 진행 중인 작업
+    * 튜토리얼 화면 추가
 */
 
 

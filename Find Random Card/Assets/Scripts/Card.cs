@@ -28,6 +28,8 @@ public class Card : MonoBehaviour
     private Button _button;
     private Image _buttonImage;
     private TextMeshProUGUI _showNumberText;
+    private ParticleSystem _particle;
+    private AudioSource _audio;
     private bool _isShow = false;
 
     // 애니메이션 이름
@@ -41,6 +43,8 @@ public class Card : MonoBehaviour
         _button = GetComponent<Button>();
         _buttonImage = GetComponent<Image>();
         _showNumberText = GetComponentInChildren<TextMeshProUGUI>();
+        _particle = GetComponent<ParticleSystem>();
+        _audio = GetComponent<AudioSource>();
     }
 
 
@@ -107,6 +111,7 @@ public class Card : MonoBehaviour
             if (!_isShow && _cardInfo.isCorrect == false && !GameManager._instance.IsFever)
             {
                 StartCoroutine(ShowNumber());
+                _audio.Play();
             }
 
             if (GameManager._instance.CheckNumber(_cardInfo))
@@ -114,6 +119,8 @@ public class Card : MonoBehaviour
                 // 정답
                 _cardInfo.isCorrect = true;
                 _buttonImage.sprite = _cardFrontCorrect;
+                _particle.Play();
+                GameManager._instance._soundManager.Play(true, "FindCard", 1.05f);
             }
         });
     }

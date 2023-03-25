@@ -4,3 +4,5 @@ README.md filter=lfs diff=lfs merge=lfs -text
 Find[[:space:]]Random[[:space:]]Card filter=lfs diff=lfs merge=lfs -text
 lld filter=lfs diff=lfs merge=lfs -text
 *.dylib filter=lfs diff=lfs merge=lfs -text
+D:/IDH[[:space:]]Studio/Dev/Find-Random-Card/Find[[:space:]]Random[[:space:]]Card/Assets/Firebase/Plugins filter=lfs diff=lfs merge=lfs -text
+*.bundle filter=lfs diff=lfs merge=lfs -text

@@ -48,7 +48,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 200
+  spritePixelsToUnits: 210
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -135,9 +135,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 250
-        width: 200
-        height: 250
+        y: 260
+        width: 210
+        height: 260
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -145,8 +145,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4677e11ce036b194fa70d71e92d8e564
-      internalID: 150754160
+      spriteID: e2becf7f73cd2c84fa7447b927d2f4d1
+      internalID: -1867746648
       vertices: []
       indices: 
       edges: []
@@ -155,10 +155,10 @@ TextureImporter:
       name: Card_Flip_1
       rect:
         serializedVersion: 2
-        x: 200
-        y: 250
-        width: 200
-        height: 250
+        x: 210
+        y: 260
+        width: 210
+        height: 260
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -166,8 +166,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 50a74b2c3ae875c47bdd5aba31a12878
-      internalID: -1743146886
+      spriteID: 887e934501607054ebc586cf50121141
+      internalID: 1605193963
       vertices: []
       indices: 
       edges: []
@@ -176,10 +176,10 @@ TextureImporter:
       name: Card_Flip_2
       rect:
         serializedVersion: 2
-        x: 400
-        y: 250
-        width: 200
-        height: 250
+        x: 420
+        y: 260
+        width: 210
+        height: 260
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -187,8 +187,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4ff4a4afbbc16b74c82a5da98412a959
-      internalID: -1784674789
+      spriteID: 3cb456df6d15a594193bb8fde9b18075
+      internalID: 1344527714
       vertices: []
       indices: 
       edges: []
@@ -197,10 +197,10 @@ TextureImporter:
       name: Card_Flip_3
       rect:
         serializedVersion: 2
-        x: 600
-        y: 250
-        width: 200
-        height: 250
+        x: 630
+        y: 260
+        width: 210
+        height: 260
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -208,8 +208,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b382f09937f9ba944a4996be86e7f81c
-      internalID: -1034983760
+      spriteID: ba3edfbb7c3d38b46a36a98dc008e0cd
+      internalID: -1832094822
       vertices: []
       indices: 
       edges: []
@@ -220,8 +220,8 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 200
-        height: 250
+        width: 210
+        height: 260
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -229,8 +229,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d963072aa957631469c940619a700d00
-      internalID: -1699082380
+      spriteID: 8ac30c5de31f94441b5be09a9a0d851e
+      internalID: 947337066
       vertices: []
       indices: 
       edges: []
@@ -239,10 +239,10 @@ TextureImporter:
       name: Card_Flip_5
       rect:
         serializedVersion: 2
-        x: 200
+        x: 210
         y: 0
-        width: 200
-        height: 250
+        width: 210
+        height: 260
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -250,8 +250,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b7254bb06dda58b4b96cb42349308972
-      internalID: 1025448546
+      spriteID: 293e9eb554e55c44182645a8729c220c
+      internalID: 625286621
       vertices: []
       indices: 
       edges: []
@@ -260,10 +260,10 @@ TextureImporter:
       name: Card_Flip_6
       rect:
         serializedVersion: 2
-        x: 400
+        x: 420
         y: 0
-        width: 200
-        height: 250
+        width: 210
+        height: 260
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -271,8 +271,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 922c3ef68d0fdf84db97f575c6c1fc81
-      internalID: 657057192
+      spriteID: 856690bf367ed2b4eb8e29f4f2306bab
+      internalID: -1099763902
       vertices: []
       indices: 
       edges: []
@@ -281,10 +281,10 @@ TextureImporter:
       name: Card_Flip_7
       rect:
         serializedVersion: 2
-        x: 600
+        x: 630
         y: 0
-        width: 200
-        height: 250
+        width: 210
+        height: 260
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -292,8 +292,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: abd1e02f5e5c77940826baf5e89bf3ff
-      internalID: -295873375
+      spriteID: 26d14ad2b2b71404ea457d88c898504c
+      internalID: -14886629
       vertices: []
       indices: 
       edges: []
@@ -309,14 +309,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Card_Flip_3: -1034983760
-      Card_Flip_6: 657057192
-      Card_Flip_1: -1743146886
-      Card_Flip_0: 150754160
-      Card_Flip_2: -1784674789
-      Card_Flip_4: -1699082380
-      Card_Flip_5: 1025448546
-      Card_Flip_7: -295873375
+      Card_Flip_3: -1832094822
+      Card_Flip_6: -1099763902
+      Card_Flip_1: 1605193963
+      Card_Flip_0: -1867746648
+      Card_Flip_2: 1344527714
+      Card_Flip_4: 947337066
+      Card_Flip_5: 625286621
+      Card_Flip_7: -14886629
   spritePackingTag: 
   pSDRemoveMatte: 0
   userData: 

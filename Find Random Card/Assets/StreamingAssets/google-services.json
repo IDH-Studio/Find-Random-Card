@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "901114710393",
+    "firebase_url": "https://find-random-card-default-rtdb.firebaseio.com",
+    "project_id": "find-random-card",
+    "storage_bucket": "find-random-card.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:901114710393:android:0d7672d7e58c22f65a07a8",
+        "android_client_info": {
+          "package_name": "com.IDH_Studio.FindRandomCard"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "901114710393-0h2pid646o8h9inkiht31vniim95frs3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvXnA8llgJZqBGSW9-w67myJcImai9C14"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "901114710393-0h2pid646o8h9inkiht31vniim95frs3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
