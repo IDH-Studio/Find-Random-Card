@@ -122,6 +122,7 @@ public class GameManager : MonoBehaviour
     public SettingManager                       _settingManager;
     public DatabaseManager                      _databaseManager;
     public PrefabManager                        _prefabManager;
+    public AdMobManager                         _adMobManager;
     
     private void Awake()
     {
@@ -161,6 +162,7 @@ public class GameManager : MonoBehaviour
     {
         SetResolution();
         _soundManager.Play(false, "StartMusic");
+        _adMobManager.LoadAd();
     }
 
     private void Update()
@@ -176,6 +178,11 @@ public class GameManager : MonoBehaviour
 
         // 게임 진행
         Game();
+    }
+
+    private void OnDestroy()
+    {
+        _adMobManager.DestroyAd();
     }
 
     // Update 관련 함수
@@ -480,6 +487,9 @@ public class GameManager : MonoBehaviour
     // Difficulty Screen에서 게임 시작 버튼을 누를 시 호출
     public void GameReady()
     {
+        // 광고 보여주기
+        _adMobManager.ShowAd();
+
         // 카드 배치, 미리보기 보여주기
 
         /* 카드 배치 시작 */
@@ -520,6 +530,9 @@ public class GameManager : MonoBehaviour
     public void GameOver(bool isClear = false)
     {
         _isGame = false;
+
+        // 광고 숨기기
+        _adMobManager.HideAd();
 
         foreach (Card curCard in _curCards)
         {
@@ -666,8 +679,7 @@ public class GameManager : MonoBehaviour
  *  2023-03-15 16:49 -> 피버 애니메이션 수정, 정답 카드 이미지 추가
  *  2023-03-16 18:16 -> 시계 아이콘 및 애니메이션 추가, 시간 조정 추가
  *  2023-03-20 16:54 -> 인게임 시간, 콤보 이미지, 애니메이션 추가, 각종 버그 수정(난이도 버튼 버그, 미리보기 시간 버그, 카드 애니메이션 버그, 콤보 버그 등)
-
- * 변경 내역
+ *  2023-03-25 23:14 -> 이미지, 파티클, 음악, 화면, DB연동 추가
     * 배경화면 추가
     * 정답일 시 파티클 보이게 파티클 추가
     * 카드 이미지 및 애니메이션 변경
@@ -675,6 +687,9 @@ public class GameManager : MonoBehaviour
     * 설정 화면 추가
     * 게임 오버 화면 수정
     * DB연동
+ * 2023-03-25 23:34 -> 광고 추가
+
+ * 변경 내역
 
  * TODO
     * 꾸미기
@@ -682,7 +697,6 @@ public class GameManager : MonoBehaviour
     * 음악 넣기(배경음, 효과음) -> 필요한 음악 더 있으면 추가해야 함(피버 음악, 오답 효과음(미정))
     * 튜토리얼 화면 추가 -> 게임 오버 화면 튜토리얼 추가 요망
     * =========================
-    * 광고 추가
     * 미리 랭킹을 확인할 수 있도록
     * 난이도 마다 진행 시간 다르게 하고 오답 시 남은 시간 1~2초 정도 깎아버리기(미정)
 
