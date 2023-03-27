@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,24 +14,25 @@ public class CardInfo
 
 public class Card : MonoBehaviour
 {
-    [SerializeField] private Sprite _cardBack;
-    [SerializeField] private Sprite _cardFront;
-    [SerializeField] private Sprite _cardFrontCorrect;
+    [SerializeField] private Sprite     _cardBack;
+    [SerializeField] private Sprite     _cardFront;
+    [SerializeField] private Sprite     _cardFrontCorrect;
 
     [Space(10)]
-    [SerializeField] private float _showAnimation = 0.7f;
-    [SerializeField] private float _speedTimes = 1;
+    [SerializeField] private float      _showAnimation = 0.7f;
+    [SerializeField] private float      _speedTimes = 1;
 
     [Space(10)]
-    [SerializeField] private Animator _flipAnim;
+    [SerializeField] private Animator   _flipAnim;
 
-    private CardInfo _cardInfo;
-    private Button _button;
-    private Image _buttonImage;
-    private TextMeshProUGUI _showNumberText;
-    private ParticleSystem _particle;
-    private AudioSource _audio;
-    private bool _isShow = false;
+    private Animator                    _findAnim;
+    private CardInfo                    _cardInfo;
+    private Button                      _button;
+    private Image                       _buttonImage;
+    private TextMeshProUGUI             _showNumberText;
+    private ParticleSystem              _particle;
+    private AudioSource                 _audio;
+    private bool                        _isShow = false;
 
     // 애니메이션 이름
     private string _cardFlipAnim = "Card_Flip";
@@ -45,6 +47,7 @@ public class Card : MonoBehaviour
         _showNumberText = GetComponentInChildren<TextMeshProUGUI>();
         _particle = GetComponent<ParticleSystem>();
         _audio = GetComponent<AudioSource>();
+        _findAnim = GetComponent<Animator>();
     }
 
 
@@ -102,6 +105,8 @@ public class Card : MonoBehaviour
         _cardInfo.isCorrect = false;
         _showNumberText.text = cardInfo.Number.ToString();
         _flipAnim.transform.localScale = new Vector2(flipCardSize, flipCardSize);
+        //_findAnim.transform.localScale = new Vector2(1, 1);
+        //_findAnim.SetBool("isFind", false);
 
         _button.onClick.AddListener(() =>
         {
@@ -117,6 +122,7 @@ public class Card : MonoBehaviour
             if (GameManager._instance.CheckNumber(_cardInfo))
             {
                 // 정답
+                _flipAnim.transform.localScale = new Vector2(flipCardSize + 60, flipCardSize + 60);
                 _cardInfo.isCorrect = true;
                 _buttonImage.sprite = _cardFrontCorrect;
                 _particle.Play();

@@ -29,6 +29,7 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private AudioClip      _buttonPopSound;
     [SerializeField] private AudioClip      _buttonPopSoundDown;
     [SerializeField] private AudioClip      _cardButtonSound;
+    [SerializeField] private AudioClip      _incorrectSound;
 
     [Space(10)]
     [Header("Card AudioSources")]
@@ -47,6 +48,7 @@ public class SoundManager : MonoBehaviour
         _audios.Add("ButtonPopSound", _buttonPopSound);
         _audios.Add("ButtonPopSoundDown", _buttonPopSoundDown);
         _audios.Add("CardButton", _cardButtonSound);
+        _audios.Add("Incorrect", _incorrectSound);
 
         AudioClip startMusic = _startMusics[Random.Range(0, _startMusics.Length)];
         _audios.Add("StartMusic", startMusic);
@@ -62,7 +64,7 @@ public class SoundManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 효과음 종류: FindCard, ButtonPopSound, ButtonPopSoundDown, CardButton <br></br>
+    /// 효과음 종류: FindCard, ButtonPopSound, ButtonPopSoundDown, CardButton, Incorrect <br></br>
     /// 배경음 종류: StartMusic, TutorialMusic, PreviewMusic, GameMusic
     /// </summary>
     /// <param name="isEffect">효과음이면 true, 배경음이면 false를 입력하세요</param>
@@ -80,6 +82,7 @@ public class SoundManager : MonoBehaviour
             if (sound == "GameMusic") { RandomGameMusic(); }
 
             _audioSources[(int)AUDIO.BGM].clip = _audios[sound];
+            _audioSources[(int)AUDIO.EFFECT].pitch = pitch;
             _audioSources[(int)AUDIO.BGM].Play();
         }
     }
@@ -87,10 +90,11 @@ public class SoundManager : MonoBehaviour
     /// <summary>
     /// 효과음만 재생 함
     /// </summary>
-    /// <param name="sound">종류: FindCard, ButtonPopSound, ButtonPopSoundDown, CardButton</param>
+    /// <param name="sound">종류: FindCard, ButtonPopSound, ButtonPopSoundDown, CardButton, Incorrect</param>
     public void PlayEffectSound(string sound)
     {
         _audioSources[(int)AUDIO.EFFECT].clip = _audios[sound];
+        _audioSources[(int)AUDIO.EFFECT].pitch = 1.0f;
         _audioSources[(int)AUDIO.EFFECT].Play();
     }
 

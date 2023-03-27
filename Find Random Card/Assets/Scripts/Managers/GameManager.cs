@@ -53,6 +53,7 @@ public class GameManager : MonoBehaviour
     // 난이도 관련 변수
     private DIFFICULTY                          _difficulty;
     private string[]                            _difficultyTypes = { "쉬움", "보통", "어려움" };
+    private float[]                             _difficultyTimes = { 60f, 75f, 90f };
 
     // 게임 관련 변수
     // 게임 
@@ -103,6 +104,7 @@ public class GameManager : MonoBehaviour
     [Header("▼ Objects")]
     [SerializeField] private Transform          _cardObj;
     [SerializeField] private Slider             _showTime;
+    [SerializeField] private Image              _showTimeImage;
     [SerializeField] private Image              _showComboGauge;
     [SerializeField] private TMP_InputField     _nickname;
 
@@ -259,6 +261,7 @@ public class GameManager : MonoBehaviour
         _gameTime += Time.deltaTime;
 
         _showTime.value = 1 - (_gameTime / _maxGameTime);
+        _showTimeImage.fillAmount = _showTime.value;
 
         if (_gameTime >= _maxGameTime)
         {
@@ -402,6 +405,7 @@ public class GameManager : MonoBehaviour
         // 난이도에 맞게 게임 세팅
         //GameSetting();
 
+        print("게임 시간: " + _maxGameTime);
         // 미리보기가 끝난 후 미리보기 화면을 끄고 제대로 게임을 시작한다.
         _gameTime = 0;
         _comboStack = 0;
@@ -409,21 +413,28 @@ public class GameManager : MonoBehaviour
         _isFever = false;
         Time.timeScale = 1;
         _showTime.value = 1;
+        _showTimeImage.fillAmount = _showTime.value;
         _showComboGauge.fillAmount = 0;
 
         _isGame = true;
     }
 
-    //void GameSetting()
-    //{
-    //    _maxFeverTime = _maxPreviewTime / 5;
-    //    // 그리드 사이즈 조절
-    //    _flipCardSize = _cellSize * 0.8f;
-    //    _cardLayoutGroup.cellSize = new Vector2(_flipCardSize, _cellSize);
-    //    _cardLayoutGroup.spacing = new Vector2(_cellSpacing, _cellSpacing);
-    //    _databaseManager.SetDatabase(_difficulty);
-    //    _showGameoverDifficulty.text = "난이도: " + _difficultyTypes[(int)_difficulty - 3];
-    //}
+    void Incorrect()
+    {
+        // 오답일 경우 쉬움, 보통 난이도는 1초
+        // 어려움 난이도는 2초가 깎이며 실패 효과음이 들린다.
+        switch (_difficulty)
+        {
+            case DIFFICULTY.EASY:
+            case DIFFICULTY.NORMAL:
+                _gameTime += 1f;
+                break;
+            case DIFFICULTY.HARD:
+                _gameTime += 2f;
+                break;
+        }
+        _soundManager.PlayEffectSound("Incorrect");
+    }
 
 
     // public 함수
@@ -475,6 +486,7 @@ public class GameManager : MonoBehaviour
         }
         _difficulty = (DIFFICULTY)gridSize;
         _gridSize = gridSize;
+        _maxGameTime = _difficultyTimes[gridSize - 3];
         _maxFeverTime = _maxPreviewTime / 5;
         // 그리드 사이즈 조절
         _flipCardSize = cellSize * 0.8f;
@@ -541,6 +553,7 @@ public class GameManager : MonoBehaviour
 
         _showComboGauge.fillAmount = 0;
         _showTime.value = 0;
+        _showTimeImage.fillAmount = _showTime.value;
 
         // 변수 초기화
         _comboStatus = 0;
@@ -589,6 +602,7 @@ public class GameManager : MonoBehaviour
 #if UNITY_EDITOR
             print("오답입니다.");
 #endif
+            Incorrect();
             if (!_isFever) StackCombo(false);
             return false;
         }
@@ -701,6 +715,10 @@ public class GameManager : MonoBehaviour
     * DB연동
  * 2023-03-25 23:34 -> 광고 추가
  * 2023-03-27 14:18 -> 랭킹 화면 추가
+ * 2023-03-27 16:41 -> 난이도별 시간 변경, 오답 기능 추가, 효과음 추가, 정답 애니메이션 추가
+    * 난이도별로 게임 시간 다르게 조정
+    * 오답 효과음 추가 및 오답 시 효과음 출력
+    * 카드 정답 애니메이션 추가
 
  * 변경 내역
 
