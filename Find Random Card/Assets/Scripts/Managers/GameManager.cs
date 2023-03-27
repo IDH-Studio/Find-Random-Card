@@ -660,6 +660,18 @@ public class GameManager : MonoBehaviour
 
         _databaseManager.GetDatas(true);
     }
+
+    public void ShowRanking()
+    {
+        _screenManager.GoScreen("Ranking");
+        _databaseManager.GetDatas("easy");
+    }
+
+    public void CloseRanking()
+    {
+        _screenManager.PrevScreen();
+        _databaseManager.PutBackScores();
+    }
 }
 
 /*
@@ -688,6 +700,7 @@ public class GameManager : MonoBehaviour
     * 게임 오버 화면 수정
     * DB연동
  * 2023-03-25 23:34 -> 광고 추가
+ * 2023-03-27 14:18 -> 랭킹 화면 추가
 
  * 변경 내역
 
@@ -697,7 +710,6 @@ public class GameManager : MonoBehaviour
     * 음악 넣기(배경음, 효과음) -> 필요한 음악 더 있으면 추가해야 함(피버 음악, 오답 효과음(미정))
     * 튜토리얼 화면 추가 -> 게임 오버 화면 튜토리얼 추가 요망
     * =========================
-    * 미리 랭킹을 확인할 수 있도록
     * 난이도 마다 진행 시간 다르게 하고 오답 시 남은 시간 1~2초 정도 깎아버리기(미정)
 
  * 진행 중인 작업

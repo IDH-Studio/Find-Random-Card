@@ -27,11 +27,13 @@ public class DatabaseManager : MonoBehaviour
     private string[]                            _databaseTypes = { "easy", "normal", "hard" };
     private string                              _databaseType;
 
-    [SerializeField] private Transform          _showScores;
+    private Transform                           _showScores;
+    [SerializeField] private Transform          _gameOverScores;
+    [SerializeField] private Transform          _rankingScores;
 
     private DatabaseReference                   _db;
     private Queue<SaveData>                     _scores;
-    private bool                                _showScore = false;
+    private bool                                _isShowScore = false;
     private bool                                _reShowScore = false;
 
     private void Awake()
@@ -42,14 +44,13 @@ public class DatabaseManager : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (_showScore) { ShowScores(); }
-        else if (_reShowScore) { ReShowScores(); }
+        if (_isShowScore) { ShowScores(); }
     }
 
     /// <summary>
     /// Firebase에서 데이터 타입에 맞는 데이터를 가져온다.
     /// </summary>
-    public void GetDatas(bool reLoad=false)
+    public void GetDatas(bool reLoad = false)
     {
         // 데이터를 가져오는 코드
         _db.Child(_databaseType).OrderByChild("elapsed_time").GetValueAsync().ContinueWith(task =>
@@ -79,8 +80,45 @@ public class DatabaseManager : MonoBehaviour
                 _scores.Enqueue(new SaveData(data["nickname"].ToString(), data["elapsed_time"].ToString()));
             }
 
-            if (reLoad) _reShowScore = true;
-            else _showScore = true;
+            _showScores = _gameOverScores;
+            _isShowScore = true;
+        });
+    }
+    
+    public void GetDatas(string dataType)
+    {
+        if (dataType == "" || dataType == null) return;
+
+        // 데이터를 가져오는 코드
+        _db.Child(dataType).OrderByChild("elapsed_time").GetValueAsync().ContinueWith(task =>
+        {
+            if (task.IsFaulted)
+            {
+#if UNITY_EDITOR
+                Debug.LogError("Database Error");
+#endif
+                return;
+            }
+
+            if(!task.IsCompleted)
+            {
+#if UNITY_EDITOR
+                Debug.LogError("Fail Get");
+#endif
+                return;
+            }
+
+            DataSnapshot snapshot = task.Result;
+
+            foreach(DataSnapshot child in snapshot.Children)
+            {
+                IDictionary data = (IDictionary)child.Value;
+
+                _scores.Enqueue(new SaveData(data["nickname"].ToString(), data["elapsed_time"].ToString()));
+            }
+
+            _showScores = _rankingScores;
+            _isShowScore = true;
         });
     }
 
@@ -109,7 +147,9 @@ public class DatabaseManager : MonoBehaviour
 
     public void ShowScores()
     {
-        _showScore = false;
+        _isShowScore = false;
+
+        if (_showScores.childCount > 0) PutBackScores();
 
         while (_scores.Count > 0)
         {
@@ -127,12 +167,12 @@ public class DatabaseManager : MonoBehaviour
         }
     }
 
-    public void ReShowScores()
-    {
-        _reShowScore = false;
-        PutBackScores();
-        ShowScores();
-    }
+    //public void ReShowScores()
+    //{
+    //    _reShowScore = false;
+    //    PutBackScores();
+    //    ShowScores();
+    //}
 
     public void SetDatabase(DIFFICULTY difficulty)
     {
@@ -158,7 +198,7 @@ public class DatabaseManager : MonoBehaviour
 
         for (int index = 0; index < childCount; ++index)
         {
-            GameManager._instance._prefabManager.PutBackScoreObj(_showScores.GetChild(index).gameObject);
+            GameManager._instance._prefabManager.PutBackScoreObj(_showScores.GetChild(0).gameObject);
         }
     }
 }
