@@ -1,5 +1,6 @@
 using Newtonsoft.Json.Linq;
 using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,9 +47,17 @@ public enum DIFFICULTY
  * 추가할거 추가하고
 */
 
+public class AudioData
+{
+    public float BGMVolume;
+    public float EffectVolume;
+}
+
 public class GameManager : MonoBehaviour
 {
     public static GameManager                   _instance;
+
+    private string                              _path;
 
     // 난이도 관련 변수
     private DIFFICULTY                          _difficulty;
@@ -126,6 +135,8 @@ public class GameManager : MonoBehaviour
     public PrefabManager                        _prefabManager;
     public AdMobManager                         _adMobManager;
     
+
+    // 생명주기 함수
     private void Awake()
     {
         if (_instance == null)
@@ -139,6 +150,8 @@ public class GameManager : MonoBehaviour
 #endif
             Destroy(gameObject);
         }
+
+        _path = Path.Combine(Application.dataPath + "/Resources/" + "/Data/", "setting.json");
 
         _cards = new List<CardInfo>(new CardInfo[_maxCardTypeCount]);
 
@@ -163,6 +176,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         SetResolution();
+        JsonLoad();
         _soundManager.Play(false, "StartMusic");
         _adMobManager.LoadAd();
     }
@@ -185,7 +199,9 @@ public class GameManager : MonoBehaviour
     private void OnDestroy()
     {
         _adMobManager.DestroyAd();
+        JsonSave();
     }
+
 
     // Update 관련 함수
     void Combo()
@@ -271,6 +287,34 @@ public class GameManager : MonoBehaviour
     }
 
     // User Function
+    void JsonLoad()
+    {
+        AudioData saveSetting = new AudioData();
+
+        if (!File.Exists(_path))
+        {
+            JsonSave();
+        }
+        else
+        {
+            string loadJson = File.ReadAllText(_path);
+            saveSetting = JsonUtility.FromJson<AudioData>(loadJson);
+
+            _soundManager.AudioSetting(saveSetting);
+        }
+    }
+
+    public void JsonSave()
+    {
+        AudioData saveSetting = new AudioData();
+
+        saveSetting.BGMVolume = _soundManager.BGMVolume;
+        saveSetting.EffectVolume = _soundManager.EffectVolume;
+
+        string json = JsonUtility.ToJson(saveSetting, true);
+
+        File.WriteAllText(_path, json);
+    }
 
     void StartFever()
     {

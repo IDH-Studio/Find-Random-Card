@@ -39,6 +39,8 @@ public class SoundManager : MonoBehaviour
 
     // Getter
     public AudioSource[] AudioSources { get { return _audioSources; } }
+    public float BGMVolume { get { return _audioSources[(int)AUDIO.BGM].volume; } }
+    public float EffectVolume { get { return _audioSources[(int)AUDIO.EFFECT].volume; } }
 
     private void Awake()
     {
@@ -113,5 +115,11 @@ public class SoundManager : MonoBehaviour
                 cardAudioSource.volume = volume;
             }
         }
+    }
+
+    public void AudioSetting(AudioData audioData)
+    {
+        _audioSources[(int)AUDIO.BGM].volume = audioData.BGMVolume;
+        _audioSources[(int)AUDIO.EFFECT].volume = audioData.EffectVolume;
     }
 }
