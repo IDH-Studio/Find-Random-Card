@@ -34,7 +34,6 @@ public class DatabaseManager : MonoBehaviour
     private DatabaseReference                   _db;
     private Queue<SaveData>                     _scores;
     private bool                                _isShowScore = false;
-    private bool                                _reShowScore = false;
 
     private void Awake()
     {
@@ -50,7 +49,7 @@ public class DatabaseManager : MonoBehaviour
     /// <summary>
     /// Firebase에서 데이터 타입에 맞는 데이터를 가져온다.
     /// </summary>
-    public void GetDatas(bool reLoad = false)
+    public void GetDatas()
     {
         // 데이터를 가져오는 코드
         _db.Child(_databaseType).OrderByChild("elapsed_time").GetValueAsync().ContinueWith(task =>
@@ -167,12 +166,6 @@ public class DatabaseManager : MonoBehaviour
         }
     }
 
-    //public void ReShowScores()
-    //{
-    //    _reShowScore = false;
-    //    PutBackScores();
-    //    ShowScores();
-    //}
 
     public void SetDatabase(DIFFICULTY difficulty)
     {
