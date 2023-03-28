@@ -734,7 +734,7 @@ public class GameManager : MonoBehaviour
 
     public void GoSelectDifficulty()
     {
-        SelectDifficulty(3);
+        //SelectDifficulty(3);
         _screenManager.GoScreen("Difficulty");
         _soundManager.PlayEffectSound("CardButton");
     }
@@ -776,6 +776,8 @@ public class GameManager : MonoBehaviour
  * 2023-03-27 20:33 -> 설정 저장 기능 추가
  * 2023-03-27 21:36 -> 시작 화면 배경 변경
 
+ * 2023-03-28 17:14 -> 버그 해결
+
  * 변경 내역
 
  * TODO
@@ -797,6 +799,8 @@ public class GameManager : MonoBehaviour
             * 게임 시작 시 광고, 카드, 미리보기가 아예 안뜨며 게임 진행이 안됨 -> adMob 문제
             * 게임 클리어 함수(GameClear)가 제대로 작동하지 않음 -> 클리어가 안되고 계속 진행이 됨 -> adMob 문제
             * 일시정지 메뉴에서 메인으로 돌아가기가 안됨 -> adMob 문제
+    * 2023-03-28
+        * 게임이 종료된 뒤 다시 시작하면 난이도가 다시 쉬움으로 돌아감
 */
 
 

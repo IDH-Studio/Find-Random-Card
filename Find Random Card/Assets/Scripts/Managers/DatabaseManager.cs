@@ -89,7 +89,10 @@ public class DatabaseManager : MonoBehaviour
     
     public void GetDatas(string dataType = "")
     {
-        if (dataType != "") _databaseType = dataType; 
+        string databaseType;
+
+        if (dataType != "") databaseType = dataType;
+        else databaseType = _databaseType;
 
         // 데이터를 가져오는 코드
         _db.Child(_databaseType).OrderByChild("elapsed_time").GetValueAsync().ContinueWith(task =>
