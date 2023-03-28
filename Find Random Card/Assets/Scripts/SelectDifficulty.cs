@@ -16,13 +16,9 @@ public class SelectDifficulty : MonoBehaviour
     private TextMeshProUGUI _showDifficultyInfo;
 
     [Space(20)]
-    [Header("Difficulty Info")]
+    [Header("▼ Difficulty Info(Easy, Normal, Hard)")]
     [TextArea]
-    [SerializeField] private string _easyInfo;
-    [TextArea]
-    [SerializeField] private string _normalInfo;
-    [TextArea]
-    [SerializeField] private string _hardInfo;
+    [SerializeField] private string[] _infos;
 
     private float[]         _scrollPageValues;
     private float           _valueDistance = 0;
@@ -123,27 +119,7 @@ public class SelectDifficulty : MonoBehaviour
 
     void ShowDifficultyInfo()
     {
-        string info = "";
-        switch ((DIFFICULTY)(_currentPage + 3))
-        {
-            case DIFFICULTY.EASY:
-                //info = "3x3의 카드가 나타나며\n" +
-                //    "10초의 미리보기\n시간이 주어집니다.";
-                info = _easyInfo;
-                break;
-            case DIFFICULTY.NORMAL:
-                //info = "4x4의 카드가 나타나며\n" +
-                //    "20초의 미리보기\n시간이 주어집니다.";
-                info = _normalInfo;
-                break;
-            case DIFFICULTY.HARD:
-                //info = "5x5의 카드가 나타나며\n" +
-                //    "30초의 미리보기\n시간이 주어집니다.";
-                info = _hardInfo;
-                break;
-        }
-
-        _showDifficultyInfo.text = info;
+        _showDifficultyInfo.text = _infos[_currentPage];
     }
 
     // 난이도 선택 화살표 버튼

@@ -49,8 +49,48 @@ public class DatabaseManager : MonoBehaviour
     /// <summary>
     /// Firebase에서 데이터 타입에 맞는 데이터를 가져온다.
     /// </summary>
-    public void GetDatas()
+//    public void GetDatas()
+//    {
+//        // 데이터를 가져오는 코드
+//        _db.Child(_databaseType).OrderByChild("elapsed_time").GetValueAsync().ContinueWith(task =>
+//        {
+//            if (task.IsFaulted)
+//            {
+//#if UNITY_EDITOR
+//                Debug.LogError("Database Error");
+//#endif
+//                return;
+//            }
+
+//            if(!task.IsCompleted)
+//            {
+//#if UNITY_EDITOR
+//                Debug.LogError("Fail Get");
+//#endif
+//                return;
+//            }
+
+//            DataSnapshot snapshot = task.Result;
+
+//            foreach(DataSnapshot child in snapshot.Children)
+//            {
+//                IDictionary data = (IDictionary)child.Value;
+
+//                string nickname = data["nickname"].ToString();
+//                string elapsedTime = data["elapsed_time"].ToString();
+
+//                _scores.Enqueue(new SaveData(nickname, string.Format("{0:0.000}", float.Parse(elapsedTime))));
+//            }
+
+//            _showScores = _gameOverScores;
+//            _isShowScore = true;
+//        });
+//    }
+    
+    public void GetDatas(string dataType = "")
     {
+        if (dataType != "") _databaseType = dataType; 
+
         // 데이터를 가져오는 코드
         _db.Child(_databaseType).OrderByChild("elapsed_time").GetValueAsync().ContinueWith(task =>
         {
@@ -76,47 +116,13 @@ public class DatabaseManager : MonoBehaviour
             {
                 IDictionary data = (IDictionary)child.Value;
 
-                _scores.Enqueue(new SaveData(data["nickname"].ToString(), data["elapsed_time"].ToString()));
+                string nickname = data["nickname"].ToString();
+                string elapsedTime = data["elapsed_time"].ToString();
+                
+                _scores.Enqueue(new SaveData(nickname, string.Format("{0:0.000}", float.Parse(elapsedTime))));
             }
 
-            _showScores = _gameOverScores;
-            _isShowScore = true;
-        });
-    }
-    
-    public void GetDatas(string dataType)
-    {
-        if (dataType == "" || dataType == null) return;
-
-        // 데이터를 가져오는 코드
-        _db.Child(dataType).OrderByChild("elapsed_time").GetValueAsync().ContinueWith(task =>
-        {
-            if (task.IsFaulted)
-            {
-#if UNITY_EDITOR
-                Debug.LogError("Database Error");
-#endif
-                return;
-            }
-
-            if(!task.IsCompleted)
-            {
-#if UNITY_EDITOR
-                Debug.LogError("Fail Get");
-#endif
-                return;
-            }
-
-            DataSnapshot snapshot = task.Result;
-
-            foreach(DataSnapshot child in snapshot.Children)
-            {
-                IDictionary data = (IDictionary)child.Value;
-
-                _scores.Enqueue(new SaveData(data["nickname"].ToString(), data["elapsed_time"].ToString()));
-            }
-
-            _showScores = _rankingScores;
+            _showScores = dataType == "" ? _gameOverScores : _rankingScores;
             _isShowScore = true;
         });
     }
@@ -125,13 +131,13 @@ public class DatabaseManager : MonoBehaviour
     {
         try
         {
-            string time = string.Format("{0:0.###}", elapsedTime);
+            //string time = string.Format("{0:0.###}", elapsedTime);
 
             // 데이터를 저장하는 코드
             DatabaseReference data = _db.Child(_databaseType).Push();
 
             data.Child("nickname").SetValueAsync(nickname);
-            data.Child("elapsed_time").SetValueAsync(time);
+            data.Child("elapsed_time").SetValueAsync(elapsedTime);
 
             return true;
         }
@@ -148,7 +154,7 @@ public class DatabaseManager : MonoBehaviour
     {
         _isShowScore = false;
 
-        if (_showScores.childCount > 0) PutBackScores();
+        PutBackScores();
 
         while (_scores.Count > 0)
         {
@@ -170,13 +176,6 @@ public class DatabaseManager : MonoBehaviour
     public void SetDatabase(DIFFICULTY difficulty)
     {
         _databaseType = _databaseTypes[(int)difficulty - 3];
-        //GetDatas();
-    }
-
-    public void SaveCancel()
-    {
-        PutBackScores();
-        GameManager._instance._screenManager.PrevScreen();
     }
 
     public void GoMain()
@@ -187,6 +186,8 @@ public class DatabaseManager : MonoBehaviour
 
     public void PutBackScores()
     {
+        if (_showScores == null || _showScores.childCount <= 0) return;
+
         int childCount = _showScores.childCount;
 
         for (int index = 0; index < childCount; ++index)

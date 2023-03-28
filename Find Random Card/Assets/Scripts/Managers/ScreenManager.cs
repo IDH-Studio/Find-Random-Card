@@ -25,7 +25,8 @@ public class ScreenManager : MonoBehaviour
         // 시작 메뉴만 활성화
         //_screenDic["Start"].SetActive(true);
         _screenStack.Push("Start");
-        ShowScreen(true, _screenStack.Peek());
+        //ShowScreen(true, _screenStack.Peek());
+        GoScreen(_screenStack.Peek());
         _bgmScreenName = _screenStack.Peek();
     }
 

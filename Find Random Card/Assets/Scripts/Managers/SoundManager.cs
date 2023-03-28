@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using TreeEditor;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -9,6 +8,12 @@ public enum AUDIO
 {
     BGM,
     EFFECT,
+}
+
+public class AudioData
+{
+    public float BGMVolume;
+    public float EffectVolume;
 }
 
 public class SoundManager : MonoBehaviour

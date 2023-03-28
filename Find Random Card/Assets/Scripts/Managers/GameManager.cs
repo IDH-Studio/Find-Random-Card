@@ -47,12 +47,6 @@ public enum DIFFICULTY
  * 추가할거 추가하고
 */
 
-public class AudioData
-{
-    public float BGMVolume;
-    public float EffectVolume;
-}
-
 public class GameManager : MonoBehaviour
 {
     public static GameManager                   _instance;
@@ -151,7 +145,7 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        _path = Path.Combine(Application.dataPath + "/Resources/" + "/Data/", "setting.json");
+        _path = Path.Combine(Application.persistentDataPath , "setting.json");
 
         _cards = new List<CardInfo>(new CardInfo[_maxCardTypeCount]);
 
@@ -177,8 +171,8 @@ public class GameManager : MonoBehaviour
     {
         SetResolution();
         JsonLoad();
-        _soundManager.Play(false, "StartMusic");
         _adMobManager.LoadAd();
+        _adMobManager.HideAd();
     }
 
     private void Update()
@@ -348,8 +342,8 @@ public class GameManager : MonoBehaviour
 
         for (int index = 0; index < _cards.Count; ++index)
         {
-            random1 = UnityEngine.Random.Range(0, _cards.Count);
-            random2 = UnityEngine.Random.Range(0, _cards.Count);
+            random1 = Random.Range(0, _cards.Count);
+            random2 = Random.Range(0, _cards.Count);
 
             temp = _cards[random1];
             _cards[random1] = _cards[random2];
@@ -385,11 +379,6 @@ public class GameManager : MonoBehaviour
 
         // Preview 화면을 이전에 보이던 화면에 덧씌움
         _screenManager.CoverScreen("Preview");
-    }
-
-    void ShowComboGauge()
-    {
-        _showComboGauge.fillAmount = _comboPart * _comboStack;
     }
 
     void StackCombo(bool isCombo)
@@ -440,16 +429,10 @@ public class GameManager : MonoBehaviour
                 StartFever();
             }
         }
-
-        //ShowComboGauge();
     }
 
     void GameStart()
     {
-        // 난이도에 맞게 게임 세팅
-        //GameSetting();
-
-        print("게임 시간: " + _maxGameTime);
         // 미리보기가 끝난 후 미리보기 화면을 끄고 제대로 게임을 시작한다.
         _gameTime = 0;
         _comboStack = 0;
@@ -543,15 +526,15 @@ public class GameManager : MonoBehaviour
     // Difficulty Screen에서 게임 시작 버튼을 누를 시 호출
     public void GameReady()
     {
+        _screenManager.GoScreen("Game");
+        _soundManager.PlayEffectSound("CardButton");
+
         // 광고 보여주기
-        _adMobManager.ShowAd();
+        //_adMobManager.ShowAd();
 
         // 카드 배치, 미리보기 보여주기
 
         /* 카드 배치 시작 */
-        // 그리드 사이즈에 맞게 카드 사이즈 조절
-        //int cellSize = -50 * _gridSize + 400;
-        //_cardLayoutGroup.cellSize = new Vector2(cellSize, cellSize + 50);
         /*
          * 게임 시작 시 카드 종류가 저장되어 있는 리스트 중 25(pow(n))개를 골라 가져온다.
         */
@@ -569,6 +552,12 @@ public class GameManager : MonoBehaviour
         ShowPreview();
     }
 
+    public void GoMain()
+    {
+        _soundManager.PlayEffectSound("CardButton");
+        GameOver(false);
+    }
+
     public void GameClear()
     {
         GameOver(true);
@@ -580,7 +569,7 @@ public class GameManager : MonoBehaviour
         _screenManager.GoScreen("GameOver");
 
         // 걸린 시간 보여주기
-        _showGameTimeInfo.text = "걸린 시간: " + _gameTime.ToString("F2");
+        _showGameTimeInfo.text = "걸린 시간: " + _gameTime.ToString("F3");
     }
 
     public void GameOver(bool isClear = false)
@@ -588,7 +577,7 @@ public class GameManager : MonoBehaviour
         _isGame = false;
 
         // 광고 숨기기
-        _adMobManager.HideAd();
+        //_adMobManager.HideAd();
 
         foreach (Card curCard in _curCards)
         {
@@ -613,7 +602,6 @@ public class GameManager : MonoBehaviour
 
         // 화면 초기화 -> 게임 오버 화면으로
         if (!isClear) _screenManager.ScreenClear();
-        //_screenManager.ScreenClear();
     }
 
     public void ChangeNumber()
@@ -621,7 +609,6 @@ public class GameManager : MonoBehaviour
         // 게임 클리어
         if (_newCards.Count <= 0)
         {
-            // 만약 새 카드가 없으면 카드를 섞어서 새롭게 가져온다. -> X
             // 만약 새 카드가 없으면 게임을 종료한다.
             GameClear();
             return;
@@ -730,6 +717,27 @@ public class GameManager : MonoBehaviour
         _screenManager.PrevScreen();
         _databaseManager.PutBackScores();
     }
+
+    public void SaveCancel()
+    {
+        _nickname.text = "";
+        _screenManager.PrevScreen();
+    }
+
+    public void CheckNickname()
+    {
+        if (_nickname.text.Length >= 7)
+        {
+            _nickname.text = _nickname.text.Substring(0, 7);
+        }
+    }
+
+    public void GoSelectDifficulty()
+    {
+        SelectDifficulty(3);
+        _screenManager.GoScreen("Difficulty");
+        _soundManager.PlayEffectSound("CardButton");
+    }
 }
 
 /*
@@ -765,16 +773,15 @@ public class GameManager : MonoBehaviour
     * 오답 시 게임 시간 감소 및 효과음 출력 기능 추가
     * 카드 정답 애니메이션 추가
  * 2023-03-27 20:05 -> 튜토리얼 화면 수정
+ * 2023-03-27 20:33 -> 설정 저장 기능 추가
+ * 2023-03-27 21:36 -> 시작 화면 배경 변경
 
  * 변경 내역
 
  * TODO
-    * 꾸미기
-    * 난이도 선택 부분 꾸미기
-    * 음악 넣기(배경음, 효과음) -> 필요한 음악 더 있으면 추가해야 함(피버 음악(미정))
+    * 앱 설정
 
  * 진행 중인 작업
-    * 튜토리얼 화면 추가
 */
 
 
@@ -783,6 +790,13 @@ public class GameManager : MonoBehaviour
     * 2023-03-20
         * 게임 두판 진행 후 미리보기할 때 카드가 저절로 넘어가며 Fever상태로 돌입됨      O
         * 게임 시작과 동시에 카드를 터치하면 애니메이션이 실행되지 않음                  O
+    * 2023-03-27
+        * 모바일로 실행 시
+            * 설정한 음량 저장이 안됨 -> Path.Combine(Application.dataPath + "/Resources/" + "/Data", "setting.json")이 아니라
+                * Path.Combine(Application.persistentDataPath, "setting.json") 으로 하면 해결 됨
+            * 게임 시작 시 광고, 카드, 미리보기가 아예 안뜨며 게임 진행이 안됨 -> adMob 문제
+            * 게임 클리어 함수(GameClear)가 제대로 작동하지 않음 -> 클리어가 안되고 계속 진행이 됨 -> adMob 문제
+            * 일시정지 메뉴에서 메인으로 돌아가기가 안됨 -> adMob 문제
 */
 
 

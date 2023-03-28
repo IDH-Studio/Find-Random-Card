@@ -25,7 +25,6 @@ public class Card : MonoBehaviour
     [Space(10)]
     [SerializeField] private Animator   _flipAnim;
 
-    private Animator                    _findAnim;
     private CardInfo                    _cardInfo;
     private Button                      _button;
     private Image                       _buttonImage;
@@ -47,7 +46,6 @@ public class Card : MonoBehaviour
         _showNumberText = GetComponentInChildren<TextMeshProUGUI>();
         _particle = GetComponent<ParticleSystem>();
         _audio = GetComponent<AudioSource>();
-        _findAnim = GetComponent<Animator>();
     }
 
 
@@ -105,8 +103,6 @@ public class Card : MonoBehaviour
         _cardInfo.isCorrect = false;
         _showNumberText.text = cardInfo.Number.ToString();
         _flipAnim.transform.localScale = new Vector2(flipCardSize, flipCardSize);
-        //_findAnim.transform.localScale = new Vector2(1, 1);
-        //_findAnim.SetBool("isFind", false);
 
         _button.onClick.AddListener(() =>
         {
