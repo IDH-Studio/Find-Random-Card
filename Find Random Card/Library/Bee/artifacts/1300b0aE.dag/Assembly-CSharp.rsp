@@ -399,7 +399,6 @@
 "Assets/Scripts/Card_Test.cs"
 "Assets/Scripts/Managers/AdMobManager.cs"
 "Assets/Scripts/Managers/DatabaseManager.cs"
-"Assets/Scripts/Managers/GameManager.cs"
 "Assets/Scripts/Managers/PrefabManager.cs"
 "Assets/Scripts/Managers/ScreenManager.cs"
 "Assets/Scripts/Managers/SettingManager.cs"
