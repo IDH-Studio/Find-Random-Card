@@ -530,7 +530,7 @@ public class GameManager : MonoBehaviour
         _soundManager.PlayEffectSound("CardButton");
 
         // 광고 보여주기
-        //_adMobManager.ShowAd();
+        _adMobManager.ShowAd();
 
         // 카드 배치, 미리보기 보여주기
 
@@ -577,7 +577,7 @@ public class GameManager : MonoBehaviour
         _isGame = false;
 
         // 광고 숨기기
-        //_adMobManager.HideAd();
+        _adMobManager.HideAd();
 
         foreach (Card curCard in _curCards)
         {
