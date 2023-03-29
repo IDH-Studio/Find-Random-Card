@@ -22,10 +22,10 @@ public class AdMobManager : MonoBehaviour
 
 #if UNITY_ANDROID
         // 제품 ID
-        //_adUnitId = "ca-app-pub-4348469999914971/4134480658";
+        _adUnitId = "ca-app-pub-4348469999914971/4134480658";
 
         // 테스트 ID
-        _adUnitId = "ca-app-pub-3940256099942544/6300978111";
+        //_adUnitId = "ca-app-pub-3940256099942544/6300978111";
 #else
         _adUnitId = "unused";
 #endif
