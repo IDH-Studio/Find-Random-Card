@@ -77,4 +77,4 @@ crashlytics-build.properties
 # Bigger Than 100M
 **/*.bundle
 
-**/Library
+**/Library/

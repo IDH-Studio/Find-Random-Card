@@ -709,7 +709,7 @@ public class GameManager : MonoBehaviour
     public void ShowRanking()
     {
         _screenManager.GoScreen("Ranking");
-        _databaseManager.GetDatas("easy");
+        //_databaseManager.GetDatas("easy");
     }
 
     public void CloseRanking()
